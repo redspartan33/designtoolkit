@@ -49,7 +49,7 @@ export default function BackgroundRemoverPage() {
     
     try {
       // Importamos dinámicamente para no engordar el bundle inicial
-      const imglyRemoveBackground = (await import('@imgly/background-removal')).default;
+      const imglyRemoveBackground = (await import('@imgly/background-removal')).removeBackground;
       
       toast.info('Procesando imagen, esto puede tomar unos segundos...', {
         id: 'bg-removal',
