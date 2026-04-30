@@ -54,8 +54,8 @@ export default function ImageCompressorPage() {
     compressImage(file, quality);
   }, [quality, compressImage]);
 
-  const handleQualityChange = async (value: readonly number[]) => {
-    const q = value[0];
+  const handleQualityChange = async (value: number | readonly number[]) => {
+    const q = Array.isArray(value) ? (value as readonly number[])[0] : value as number;
     setQuality(q);
     if (originalFile) compressImage(originalFile, q);
   };
