@@ -2,43 +2,76 @@
 
 ## Comandos del Proyecto
 - **Instalar dependencias**: `pnpm install`
-- **Servidor de desarrollo**: `pnpm dev`
+- **Servidor de desarrollo**: `pnpm dev` (corre en http://localhost:3000)
 - **Compilar producción**: `pnpm build`
 - **Linter/Formatter**: `pnpm biome check --write`
 
-## Estructura y Arquitectura
-- **Framework**: Next.js 15 (App Router), React 19, TypeScript.
-- **Estilos**: Tailwind CSS v4, shadcn/ui.
+## Stack
+- **Framework**: Next.js 16 (App Router), React 19, TypeScript.
+- **Estilos**: Tailwind CSS v4, shadcn/ui (con `@base-ui/react` — **no tiene `asChild`**).
 - **Iconos**: Lucide React.
-- **Almacenamiento**: Sin base de datos (se usa `localStorage` o `IndexedDB` en el cliente). Todo el procesamiento debe ser local para mantener privacidad y velocidad.
-- **Tools Registry**: Única fuente de verdad en `lib/tools-registry.ts`. Para añadir una nueva herramienta, crear su ruta en `app/tools/[nombre]/page.tsx` y añadirla a este registry.
-- **Diseño UI**: Minimalista, parecido a Vercel/Linear. Mucho whitespace, tipografía Geist.
+- **Estado global**: Zustand + persist middleware (`lib/store.ts`).
+- **Tipografía**: Geist Sans + Geist Mono (Google Fonts).
+- **Almacenamiento**: Sin base de datos. Todo se procesa localmente (localStorage / IndexedDB). Privacidad total.
+
+## Arquitectura de Navegación (Fase 8)
+
+**No hay sidebar.** La navegación es 100% centrada en búsqueda.
+
+- **Homepage** (`app/page.tsx`): barra de búsqueda prominente + pills de categoría + grid de herramientas ordenado por las más usadas.
+- **Tool pages**: layout full-width con header mínimo propio (botón `← D` para volver al home).
+- **`app/layout.tsx`**: solo contiene los providers (`ThemeProvider`, `StyleProvider`, `TooltipProvider`, `CommandPalette`, `Toaster`). No define estructura visual.
+- **`CommandPalette`** (`⌘K`): disponible en todas las páginas, herramientas ordenadas por uso.
+
+## Sistema de Temas
+Hay 5 temas. El tipo es `VisualStyle` en `lib/store.ts`. Las variables CSS están en `app/globals.css`.
+
+| ID | Nombre | Estética | Radius |
+|----|--------|----------|--------|
+| `nature` | Glass Nature | Glassmorphic verde/teal, fondo con degradados radiales | 1.25rem |
+| `earth` | Bento Earth | Cajas sólidas, tonos tierra cálidos, amarillo acento | 2.5rem |
+| `aurora` | Glass Aurora | Glassmorphic púrpura/teal, fondo aurora boreal | 1.25rem |
+| `cyber` | Neon Cyber | Terminal oscuro, primario neon `#00ff88`, acento rosa `#ff0066` | 0.375rem |
+| `ocean` | Ocean | Azul marino limpio y profesional | 1rem |
+
+**Cómo funcionan los temas:**
+- `StyleProvider` añade `theme-{id}` al `<body>`.
+- La clase utilitaria `.glass` y `.glass-panel` tienen variantes por tema dentro de `@layer utilities` en `globals.css`.
+- Los fondos degradados se aplican directamente con selectores `body.theme-aurora`, `html.dark body.theme-aurora`, etc.
+- El nature theme también necesita la clase `bg-nature` en body (la añade `StyleProvider`).
+
+## Store (`lib/store.ts`)
+```ts
+type VisualStyle = 'nature' | 'earth' | 'aurora' | 'cyber' | 'ocean'
+
+// Persisted:
+visualStyle: VisualStyle
+toolUsageCounts: Record<string, number>   // incrementa al entrar a cada tool
+
+// Session only:
+commandPaletteOpen: boolean
+```
+
+## Tools Registry (`lib/tools-registry.ts`)
+Única fuente de verdad. Para añadir una herramienta:
+1. Crear `app/tools/[nombre]/page.tsx` usando `<ToolPageShell toolId="nombre">`.
+2. Añadir entrada al array en `lib/tools-registry.ts`.
+
+## `ToolPageShell` (`components/tools/tool-page-shell.tsx`)
+- Es un **Client Component** (`'use client'`).
+- Llama a `incrementToolUsage(tool.id)` en `useEffect` al montar.
+- Renderiza su propio header con botón de regreso, nombre de la herramienta, `ThemeManager` y `ThemeToggle`.
+- El contenido se envuelve en `max-w-6xl mx-auto px-4 sm:px-6 py-8`.
+- **Todas las páginas de herramientas deben usar este componente.**
 
 ## Reglas de Desarrollo
-- Mantener la modularidad: Las herramientas deben ser componentes autocontenidos en `app/tools/[nombre]`.
-- Envolver todas las páginas de herramientas en el componente `ToolPageShell`.
-- Preguntar antes de ejecutar comandos destructivos o de instalar paquetes pesados.
-- Explicar brevemente las decisiones de arquitectura.
-- No modificar librerías o dependencias sin la aprobación del usuario.
-- Trabajar en pasos incrementales y reportar avances clave.
-
-## Fase Actual: Fase 8 - UI Overhaul & Multi-Theme Expansion
-- **Temas disponibles** (5 en total, `lib/store.ts` tipo `VisualStyle`):
-  - `nature` → Glass Nature (glassmorphic verde/teal, gradientes dinámicos)
-  - `earth` → Bento Earth (cajas sólidas, tierra cálida, radius grande)
-  - `aurora` → Glass Aurora (glassmorphic púrpura/teal aurora boreal) ✨ NUEVO
-  - `cyber` → Neon Cyber (terminal oscuro, neon verde #00ff88, radius sharp) ✨ NUEVO
-  - `ocean` → Ocean (azul marino, limpio y profesional, radius 1rem) ✨ NUEVO
-- **Arquitectura de temas**: Variables CSS en `app/globals.css`. Clases `glass` y `glass-panel` con variantes por tema. Fondos degradados directamente en `body.theme-*`.
-- **Navegación mejorada**:
-  - `CommandPalette` (⌘K): búsqueda rápida con navegación por teclado, historial de recientes.
-  - `Sidebar` colapsable: modo icono (72px) o expandido (240px), persiste en Zustand.
-  - `MobileNav`: barra inferior fija en mobile (< lg), con accesos directos por categoría.
-  - `Header`: breadcrumbs del tool activo, trigger de ⌘K, manager de temas.
-- **Store** (`lib/store.ts`): `visualStyle`, `sidebarCollapsed`, `commandPaletteOpen`, `recentToolIds` (últimos 6).
-- **Dependencias previas**: `@mlc-ai/web-llm` (IA Local), `zustand` (Estado), `next-themes` (Modo oscuro/claro extendido).
+- No hay sidebar ni nav lateral. No los reintroduzcas.
+- **shadcn/ui aquí usa `@base-ui/react`**: `DropdownMenuTrigger` y `TooltipTrigger` NO tienen prop `asChild`.
+- Preguntar antes de instalar dependencias nuevas o ejecutar comandos destructivos.
+- Mantener modularidad: cada herramienta es autocontenida en `app/tools/[nombre]`.
+- Al terminar cambios relevantes, actualizar este archivo.
 
 ## Microservicio (Heatmap)
 - **Ruta**: `/microservice/`
 - **Levantar**: `cd microservice && source venv/bin/activate && python main.py`
-- **Dependencias**: OpenCV (contrib), FastAPI, NumPy.
+- **Dependencias Python**: OpenCV (contrib), FastAPI, NumPy.
