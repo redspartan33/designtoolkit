@@ -27,6 +27,9 @@ import {
   ClipboardList,
   TextCursor,
   Ruler,
+  Map,
+  Grid2X2,
+  FlaskConical,
 } from 'lucide-react';
 
 export const toolsRegistry: Tool[] = [
@@ -195,6 +198,39 @@ export const toolsRegistry: Tool[] = [
   },
 
   // Diseño
+  {
+    id: 'journey-map',
+    name: 'Journey Map',
+    description: 'Construye mapas de viaje del usuario con emociones, touchpoints y oportunidades.',
+    category: 'Diseño',
+    icon: Map,
+    route: '/tools/journey-map',
+    status: 'stable',
+    privacy: 'local',
+    tags: ['diseño', 'journey', 'mapa', 'usuario', 'experiencia', 'ux'],
+  },
+  {
+    id: 'assumption-mapper',
+    name: 'Assumption Mapper',
+    description: 'Prioriza supuestos de diseño en una matriz impacto × certeza.',
+    category: 'Diseño',
+    icon: Grid2X2,
+    route: '/tools/assumption-mapper',
+    status: 'stable',
+    privacy: 'local',
+    tags: ['diseño', 'supuestos', 'validacion', 'matriz', 'research'],
+  },
+  {
+    id: 'usability-script',
+    name: 'Test Script',
+    description: 'Genera guiones estructurados para tests de usabilidad moderados.',
+    category: 'Diseño',
+    icon: FlaskConical,
+    route: '/tools/usability-script',
+    status: 'stable',
+    privacy: 'local',
+    tags: ['diseño', 'usabilidad', 'test', 'guion', 'research', 'entrevista'],
+  },
   {
     id: 'spacing-scale',
     name: 'Escala de Espaciado',
