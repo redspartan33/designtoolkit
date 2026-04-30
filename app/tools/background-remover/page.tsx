@@ -56,6 +56,7 @@ export default function BackgroundRemoverPage() {
       });
 
       const blob = await imglyRemoveBackground(originalImageUrl, {
+        publicPath: "https://staticimgly.com/@imgly/background-removal-data/1.7.0/dist/",
         progress: (key, current, total) => {
           // El progreso no siempre es lineal y key indica diferentes etapas (fetch, compute)
           // Aproximamos un progreso general

@@ -146,7 +146,7 @@ export const toolsRegistry: Tool[] = [
     category: 'Análisis',
     icon: Flame,
     route: '/tools/heatmap-analyzer',
-    status: 'coming-soon',
+    status: 'beta',
     privacy: 'server',
     tags: ['analisis', 'heatmap', 'visual'],
   },
