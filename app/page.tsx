@@ -15,7 +15,8 @@ const categories: (ToolCategory | "Todas")[] = [
   "Color",
   "Código",
   "Análisis",
-  "Layout"
+  "Layout",
+  "Escritura"
 ];
 
 export default function Dashboard() {
@@ -35,37 +36,41 @@ export default function Dashboard() {
   });
 
   return (
-    <div className="flex flex-col space-y-8 pb-10">
-      <div className="flex flex-col space-y-2">
-        <h1 className="text-4xl font-bold tracking-tight">Bienvenido a DesignKit</h1>
-        <p className="text-lg text-muted-foreground">
-          Tu suite personal de herramientas de diseño, todo en un solo lugar y corriendo localmente.
+    <div className="flex flex-col space-y-12 pb-10">
+      <div className="flex flex-col space-y-3">
+        <h1 className="text-5xl font-black tracking-tight bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent">
+          DesignKit
+        </h1>
+        <p className="text-xl text-muted-foreground max-w-2xl leading-relaxed">
+          Tu suite premium de herramientas de diseño. 
+          <span className="block text-sm font-medium mt-2 text-primary">Procesamiento local • Privacidad total • Alta fidelidad</span>
         </p>
       </div>
 
-      <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:space-x-4 sm:space-y-0">
+      <div className="flex flex-col space-y-6 sm:flex-row sm:items-center sm:space-x-6 sm:space-y-0 p-8 glass rounded-[2.5rem] shadow-xl">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground/60" />
           <Input
-            placeholder="Buscar por nombre, descripción o tag..."
-            className="pl-9 bg-background"
+            placeholder="Buscar herramienta..."
+            className="pl-12 h-12 bg-white/20 dark:bg-black/20 border-white/10 rounded-2xl focus-visible:ring-primary/30 text-lg"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
         <div className="flex flex-wrap gap-2">
           {categories.map((category) => (
-            <Badge
+            <button
               key={category}
-              variant={activeCategory === category ? "default" : "secondary"}
               className={cn(
-                "cursor-pointer hover:bg-primary/80 transition-colors",
-                activeCategory !== category && "hover:bg-secondary/80 text-foreground"
+                "px-5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-300 shadow-sm border",
+                activeCategory === category 
+                  ? "bg-primary text-primary-foreground border-primary shadow-lg scale-105" 
+                  : "bg-white/30 dark:bg-black/30 text-foreground border-white/10 hover:bg-white/50 dark:hover:bg-black/50"
               )}
               onClick={() => setActiveCategory(category)}
             >
               {category}
-            </Badge>
+            </button>
           ))}
         </div>
       </div>

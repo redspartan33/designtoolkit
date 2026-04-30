@@ -17,6 +17,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+import { StyleProvider } from "@/components/layout/style-provider";
+
 export const metadata: Metadata = {
   title: "DesignKit",
   description: "Plataforma de herramientas para diseño",
@@ -30,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
       >
         <ThemeProvider
           attribute="class"
@@ -38,18 +40,20 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <TooltipProvider>
-            <div className="flex h-screen overflow-hidden bg-background">
-              <Sidebar />
-              <div className="flex flex-1 flex-col overflow-hidden">
-                <Header />
-                <main className="flex-1 overflow-auto bg-muted/10 p-6">
+          <StyleProvider>
+            <TooltipProvider>
+            <div className="flex h-screen overflow-hidden p-4 lg:p-6 gap-6">
+              <Sidebar className="glass rounded-[2rem] shadow-2xl" />
+              <div className="flex flex-1 flex-col overflow-hidden gap-6">
+                <Header className="glass rounded-[2rem] shadow-xl px-8" />
+                <main className="flex-1 overflow-auto rounded-[2rem] glass-panel p-8 shadow-2xl">
                   <div className="mx-auto max-w-6xl">{children}</div>
                 </main>
               </div>
             </div>
             <Toaster />
-          </TooltipProvider>
+            </TooltipProvider>
+          </StyleProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -4,6 +4,7 @@ import { ChevronRight, Home } from "lucide-react";
 import { toolsRegistry } from "@/lib/tools-registry";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
 interface ToolPageShellProps {
   toolId: string;
@@ -43,11 +44,15 @@ export function ToolPageShell({ toolId, children }: ToolPageShellProps) {
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="flex items-start gap-4">
-          <div className="mt-1 rounded-lg bg-primary/10 p-3">
-            <Icon className="h-6 w-6 text-primary" />
+          <div className={cn(
+            "mt-1 rounded-2xl p-4 shadow-sm transition-colors duration-500",
+            "[.theme-nature_&]:bg-primary/10 [.theme-nature_&]:text-primary",
+            "[.theme-earth_&]:bg-accent [.theme-earth_&]:text-accent-foreground"
+          )}>
+            <Icon className="h-8 w-8" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">{tool.name}</h1>
+            <h1 className="text-4xl font-black tracking-tight">{tool.name}</h1>
             <p className="mt-1 text-lg text-muted-foreground">
               {tool.description}
             </p>
@@ -60,11 +65,9 @@ export function ToolPageShell({ toolId, children }: ToolPageShellProps) {
         </div>
       </div>
 
-      <Separator />
-
       {/* Content Area */}
-      <div className="min-h-[400px] rounded-xl border bg-card text-card-foreground shadow-sm">
-        <div className="p-6">{children}</div>
+      <div className="min-h-[400px]">
+        <div>{children}</div>
       </div>
     </div>
   );

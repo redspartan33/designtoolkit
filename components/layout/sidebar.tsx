@@ -5,7 +5,11 @@ import { usePathname } from "next/navigation";
 import { toolsRegistry } from "@/lib/tools-registry";
 import { cn } from "@/lib/utils";
 
-export function Sidebar() {
+interface SidebarProps {
+  className?: string;
+}
+
+export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname();
 
   // Group tools by category
@@ -18,28 +22,33 @@ export function Sidebar() {
   }, {} as Record<string, typeof toolsRegistry>);
 
   return (
-    <div className="hidden border-r bg-muted/20 lg:block lg:w-64 shrink-0">
-      <div className="flex h-full max-h-screen flex-col gap-2">
-        <div className="flex h-14 items-center border-b px-6">
-          <Link href="/" className="flex items-center gap-2 font-semibold">
-            <span className="text-lg tracking-tight">DesignKit</span>
+    <div className={cn("hidden lg:block lg:w-64 shrink-0 overflow-hidden", className)}>
+      <div className="flex h-full max-h-screen flex-col gap-4">
+        <div className="flex h-16 items-center px-8">
+          <Link href="/" className="flex items-center gap-3 font-bold">
+            <div className="size-8 rounded-xl bg-primary flex items-center justify-center text-primary-foreground shadow-lg">
+              <span className="text-xl">D</span>
+            </div>
+            <span className="text-xl tracking-tight">DesignKit</span>
           </Link>
         </div>
         <div className="flex-1 overflow-auto py-2">
-          <nav className="grid items-start px-4 text-sm font-medium">
+          <nav className="grid items-start px-4 gap-1 text-sm font-medium">
             <Link
               href="/"
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
-                pathname === "/" ? "bg-muted text-primary" : ""
+                "flex items-center gap-3 rounded-[1.25rem] px-4 py-3 transition-all duration-300",
+                pathname === "/" 
+                  ? "bg-primary text-primary-foreground shadow-lg scale-[1.02]" 
+                  : "text-muted-foreground hover:bg-white/10 hover:text-foreground"
               )}
             >
               Dashboard
             </Link>
 
             {Object.entries(categories).map(([category, tools]) => (
-              <div key={category} className="mt-4">
-                <h4 className="mb-1 rounded-md px-2 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <div key={category} className="mt-8 space-y-1">
+                <h4 className="mb-2 px-4 py-1 text-[10px] font-black uppercase tracking-[0.25em] text-muted-foreground/40">
                   {category}
                 </h4>
                 {tools.map((tool) => {
@@ -50,12 +59,19 @@ export function Sidebar() {
                       key={tool.id}
                       href={tool.route}
                       className={cn(
-                        "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
-                        isActive ? "bg-muted text-primary" : ""
+                        "group flex items-center gap-3 rounded-[1.25rem] px-4 py-3 transition-all duration-300",
+                        isActive 
+                          ? "[.theme-nature_&]:bg-white/20 [.theme-nature_&]:backdrop-blur-md [.theme-earth_&]:bg-accent [.theme-earth_&]:text-accent-foreground shadow-sm" 
+                          : "text-muted-foreground hover:bg-white/10 hover:text-foreground"
                       )}
                     >
-                      <Icon className="h-4 w-4" />
-                      {tool.name}
+                      <div className={cn(
+                        "p-2 rounded-xl transition-all duration-300",
+                        isActive ? "bg-primary/10" : "group-hover:bg-primary/5"
+                      )}>
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <span className="font-bold tracking-tight">{tool.name}</span>
                     </Link>
                   );
                 })}

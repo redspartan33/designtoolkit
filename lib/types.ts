@@ -1,6 +1,6 @@
 import { LucideIcon } from 'lucide-react';
 
-export type ToolCategory = 'Imagen' | 'Color' | 'Código' | 'Análisis' | 'Layout';
+export type ToolCategory = 'Imagen' | 'Color' | 'Código' | 'Análisis' | 'Layout' | 'Escritura';
 
 export interface Tool {
   id: string;

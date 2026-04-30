@@ -1,21 +1,22 @@
 "use client"
 
 import { ThemeToggle } from "./theme-toggle";
+import { ThemeManager } from "./theme-manager";
+import { cn } from "@/lib/utils";
 
-export function Header() {
+interface HeaderProps {
+  className?: string;
+}
+
+export function Header({ className }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center justify-between">
+    <header className={cn("sticky top-0 z-50 w-full flex items-center h-16 shrink-0", className)}>
+      <div className="w-full flex items-center justify-between px-2">
         <div className="flex items-center gap-4">
-          {/* Logo or Title can go here, but sidebar already has it */}
+          <h1 className="text-sm font-bold uppercase tracking-[0.2em] opacity-50 ml-4">DesignKit</h1>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-full flex-1 md:w-auto md:flex-none">
-            {/* Command Menu Placeholder */}
-            <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-              <span className="text-xs">⌘</span>K
-            </kbd>
-          </div>
+        <div className="flex items-center gap-4 mr-2">
+          <ThemeManager />
           <ThemeToggle />
         </div>
       </div>

@@ -49,9 +49,14 @@
 }
 
 :root {
+  --radius: 1.25rem;
+}
+
+/* Theme: Nature (Glassmorphism) */
+.theme-nature {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
+  --card: oklch(1 0 0 / 40%);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
@@ -67,26 +72,21 @@
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
+  --radius: 1.25rem;
+  --sidebar: oklch(1 0 0 / 40%);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent: oklch(0.97 0 0 / 50%);
   --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-.dark {
+.dark.theme-nature {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
+  --card: oklch(0 0 0 / 40%);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
@@ -102,19 +102,128 @@
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
+  --sidebar: oklch(0 0 0 / 40%);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent: oklch(1 0 0 / 10%);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+/* Theme: Earth (Bento/Warm) */
+.theme-earth {
+  --background: #ece8e1;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+  --primary: #1a1a1a;
+  --primary-foreground: #f9f9f9;
+  --secondary: #e3ded6;
+  --secondary-foreground: #1a1a1a;
+  --muted: #f4f1ed;
+  --muted-foreground: #707070;
+  --accent: #f9c80e;
+  --accent-foreground: #1a1a1a;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: #dcd7ce;
+  --input: #dcd7ce;
+  --ring: #1a1a1a;
+  --radius: 2.5rem;
+  --sidebar: #ece8e1;
+  --sidebar-foreground: #1a1a1a;
+  --sidebar-primary: #1a1a1a;
+  --sidebar-primary-foreground: #f9f9f9;
+  --sidebar-accent: #e3ded6;
+  --sidebar-accent-foreground: #1a1a1a;
+  --sidebar-border: #dcd7ce;
+  --sidebar-ring: #1a1a1a;
+}
+
+.dark.theme-earth {
+  --background: #0f0f0f;
+  --foreground: #f9f9f9;
+  --card: #1a1a1a;
+  --card-foreground: #f9f9f9;
+  --popover: #1a1a1a;
+  --popover-foreground: #f9f9f9;
+  --primary: #f9c80e;
+  --primary-foreground: #1a1a1a;
+  --secondary: #2a2a2a;
+  --secondary-foreground: #f9f9f9;
+  --muted: #2a2a2a;
+  --muted-foreground: #a0a0a0;
+  --accent: #f9c80e;
+  --accent-foreground: #1a1a1a;
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: #333333;
+  --input: #333333;
+  --ring: #f9c80e;
+  --sidebar: #0f0f0f;
+  --sidebar-foreground: #f9f9f9;
+  --sidebar-primary: #f9c80e;
+  --sidebar-primary-foreground: #1a1a1a;
+  --sidebar-accent: #1a1a1a;
+  --sidebar-accent-foreground: #f9c80e;
+  --sidebar-border: #333333;
+  --sidebar-ring: #f9c80e;
+}
+
+@layer utilities {
+  .glass {
+    .theme-nature & {
+      @apply bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/20 dark:border-white/10 saturate-150;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+    }
+    .theme-earth & {
+      @apply bg-card border border-border shadow-sm transition-all duration-300;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+    }
+  }
+  .glass-panel {
+    .theme-nature & {
+      @apply bg-white/60 dark:bg-black/60 backdrop-blur-3xl border border-white/30 dark:border-white/10;
+      box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.1);
+    }
+    .theme-earth & {
+      @apply bg-[#f4f1ed] dark:bg-[#1a1a1a] border border-border p-4 shadow-inner;
+    }
+  }
+  .bg-nature {
+    .theme-nature & {
+      background-color: #f1f8e9;
+      background-image: 
+        radial-gradient(at 0% 0%, hsla(160, 84%, 93%, 1) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, hsla(190, 84%, 93%, 1) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(220, 84%, 93%, 1) 0, transparent 50%),
+        radial-gradient(at 0% 50%, hsla(140, 84%, 93%, 1) 0, transparent 50%),
+        radial-gradient(at 100% 50%, hsla(240, 84%, 93%, 1) 0, transparent 50%),
+        radial-gradient(at 0% 100%, hsla(120, 84%, 93%, 1) 0, transparent 50%),
+        radial-gradient(at 50% 100%, hsla(180, 84%, 93%, 1) 0, transparent 50%),
+        radial-gradient(at 100% 100%, hsla(210, 84%, 93%, 1) 0, transparent 50%);
+      background-attachment: fixed;
+    }
+  }
+  .dark .bg-nature {
+    .theme-nature & {
+      background-color: #000c0f;
+      background-image: 
+        radial-gradient(at 0% 0%, hsla(160, 84%, 5%, 1) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, hsla(190, 84%, 5%, 1) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(220, 84%, 5%, 1) 0, transparent 50%),
+        radial-gradient(at 0% 50%, hsla(140, 84%, 5%, 1) 0, transparent 50%),
+        radial-gradient(at 100% 50%, hsla(240, 84%, 5%, 1) 0, transparent 50%),
+        radial-gradient(at 0% 100%, hsla(120, 84%, 5%, 1) 0, transparent 50%),
+        radial-gradient(at 50% 100%, hsla(180, 84%, 5%, 1) 0, transparent 50%),
+        radial-gradient(at 100% 100%, hsla(210, 84%, 5%, 1) 0, transparent 50%);
+    }
+  }
+  .bento-card {
+    @apply bg-card rounded-[2.5rem] border border-border p-6 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+  }
 }
 
 @layer base {
@@ -122,7 +231,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground transition-all duration-500 ease-in-out;
   }
   html {
     @apply font-sans;

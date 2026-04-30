@@ -22,22 +22,16 @@
 - No modificar librerías o dependencias sin la aprobación del usuario.
 - Trabajar en pasos incrementales y reportar avances clave.
 
-## Fase Actual: Fase 5 - Ampliación de Herramientas
-- **Herramientas Implementadas**:
-  - Generador QR, Extractor de Paleta, Contraste, Compresor de Imágenes (Cliente).
-  - **Removedor de Fondos**: IA en cliente vía `@imgly/background-removal`.
-  - **Heatmap Analyzer**: Análisis de atención basado en principios UX. Requiere microservicio FastAPI en puerto 8000.
-  - **Upscaler** (`image-upscaler`): Interpolación bilineal + sharpening via Canvas API. 100% cliente.
-  - **Escalas de Color** (`color-scale-generator`): Generación HSL de escalas (Tailwind/Pastel/Vívido/Neutral), exporta CSS vars.
-  - **Optimizador SVG** (`svg-optimizer`): Usa `svgo/browser` con plugins configurables individualmente.
-  - **Gradientes** (`gradient-generator`): Lineal/Radial/Cónico, editor de paradas, presets, exporta CSS y PNG.
-  - **Convertidor de Formatos** (`format-converter`): Canvas API para PNG/JPG/WEBP/AVIF con control de calidad.
-- **Componentes Compartidos**:
-  - `ImageDropZone`: Estandarizado para carga, arrastre y pegado de imágenes.
-- **Dependencias nuevas**: `svgo@4` (usado via `svgo/browser` con import dinámico).
+## Fase Actual: Fase 7 - IA Assistant & Multi-Theme System
+- **Novedades**:
+  - **Asistente de Copy** (`copy-assistant`): Chatbot experto en copywriting que utiliza **Llama 3.2 1B** localmente vía WebGPU. Soporta frameworks (AIDA/PAS/FAB) y memoria de contexto.
+  - **Sistema de Temas**: Implementación de un administrador visual de estilos. 
+    - `Glass Nature`: Estética glassmorphic con gradientes dinámicos.
+    - `Bento Earth`: Estética de cajas sólidas, colores tierra y grandes radios de borde.
+- **Arquitectura de Estado**: Integración de `Zustand` para manejar el estado de la UI y persistencia de temas.
+- **Dependencias nuevas**: `@mlc-ai/web-llm` (IA Local), `zustand` (Estado), `next-themes` (Modo oscuro/claro extendido).
 
 ## Microservicio (Heatmap)
 - **Ruta**: `/microservice/`
 - **Levantar**: `cd microservice && source venv/bin/activate && python main.py`
 - **Dependencias**: OpenCV (contrib), FastAPI, NumPy.
-
