@@ -23,7 +23,10 @@ import {
   AlignLeft,
   FileText,
   CaseSensitive,
-  Sparkles
+  Sparkles,
+  ClipboardList,
+  TextCursor,
+  Ruler,
 } from 'lucide-react';
 
 export const toolsRegistry: Tool[] = [
@@ -189,6 +192,41 @@ export const toolsRegistry: Tool[] = [
     status: 'stable',
     privacy: 'local',
     tags: ['layout', 'gradiente', 'generador'],
+  },
+
+  // Diseño
+  {
+    id: 'spacing-scale',
+    name: 'Escala de Espaciado',
+    description: 'Genera sistemas de espaciado en múltiplos exportables como CSS, Tailwind o tokens.',
+    category: 'Diseño',
+    icon: Ruler,
+    route: '/tools/spacing-scale',
+    status: 'stable',
+    privacy: 'local',
+    tags: ['diseño', 'espaciado', 'spacing', 'tokens', 'tailwind', 'sistema'],
+  },
+  {
+    id: 'typography-scale',
+    name: 'Escala Tipográfica',
+    description: 'Genera escalas tipográficas modulares con ratios clásicos.',
+    category: 'Diseño',
+    icon: TextCursor,
+    route: '/tools/typography-scale',
+    status: 'stable',
+    privacy: 'local',
+    tags: ['diseño', 'tipografia', 'escala', 'tokens', 'sistema'],
+  },
+  {
+    id: 'brief-builder',
+    name: 'Brief Builder',
+    description: 'Genera un design brief estructurado paso a paso.',
+    category: 'Diseño',
+    icon: ClipboardList,
+    route: '/tools/brief-builder',
+    status: 'stable',
+    privacy: 'local',
+    tags: ['diseño', 'brief', 'proceso', 'stakeholders', 'planning'],
   },
 
   // Escritura
