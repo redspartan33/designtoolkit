@@ -22,6 +22,16 @@
 - No modificar librerías o dependencias sin la aprobación del usuario.
 - Trabajar en pasos incrementales y reportar avances clave.
 
-## Fase Actual: Fase 2
-- Herramientas a implementar: Generador QR, Extractor de Paleta, Contraste, Compresor de Imágenes.
-- Todas corren 100% en el lado del cliente (browser).
+## Fase Actual: Fase 4 - Consolidación de Herramientas Complejas
+- **Herramientas Implementadas**:
+  - Generador QR, Extractor de Paleta, Contraste, Compresor de Imágenes (Cliente).
+  - **Removedor de Fondos**: IA en cliente vía `@imgly/background-removal`.
+  - **Heatmap Analyzer**: Análisis de atención basado en principios UX. Requiere microservicio FastAPI en puerto 8000.
+- **Componentes Compartidos**:
+  - `ImageDropZone`: Estandarizado para carga, arrastre y pegado de imágenes.
+
+## Microservicio (Heatmap)
+- **Ruta**: `/microservice/`
+- **Levantar**: `cd microservice && source venv/bin/activate && python main.py`
+- **Dependencias**: OpenCV (contrib), FastAPI, NumPy.
+
