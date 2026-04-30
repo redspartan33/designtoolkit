@@ -483,4 +483,28 @@ html.dark body.theme-cyber .glass-panel {
   html {
     @apply font-sans;
   }
+  /* Hide scrollbar on category pills row */
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Card stagger animation */
+@keyframes card-appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-appear {
+  animation: card-appear 0.3s ease-out both;
 }
