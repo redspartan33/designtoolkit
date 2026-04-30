@@ -22,14 +22,21 @@
 - No modificar librerías o dependencias sin la aprobación del usuario.
 - Trabajar en pasos incrementales y reportar avances clave.
 
-## Fase Actual: Fase 7 - IA Assistant & Multi-Theme System
-- **Novedades**:
-  - **Asistente de Copy** (`copy-assistant`): Chatbot experto en copywriting que utiliza **Llama 3.2 1B** localmente vía WebGPU. Soporta frameworks (AIDA/PAS/FAB) y memoria de contexto.
-  - **Sistema de Temas**: Implementación de un administrador visual de estilos. 
-    - `Glass Nature`: Estética glassmorphic con gradientes dinámicos.
-    - `Bento Earth`: Estética de cajas sólidas, colores tierra y grandes radios de borde.
-- **Arquitectura de Estado**: Integración de `Zustand` para manejar el estado de la UI y persistencia de temas.
-- **Dependencias nuevas**: `@mlc-ai/web-llm` (IA Local), `zustand` (Estado), `next-themes` (Modo oscuro/claro extendido).
+## Fase Actual: Fase 8 - UI Overhaul & Multi-Theme Expansion
+- **Temas disponibles** (5 en total, `lib/store.ts` tipo `VisualStyle`):
+  - `nature` → Glass Nature (glassmorphic verde/teal, gradientes dinámicos)
+  - `earth` → Bento Earth (cajas sólidas, tierra cálida, radius grande)
+  - `aurora` → Glass Aurora (glassmorphic púrpura/teal aurora boreal) ✨ NUEVO
+  - `cyber` → Neon Cyber (terminal oscuro, neon verde #00ff88, radius sharp) ✨ NUEVO
+  - `ocean` → Ocean (azul marino, limpio y profesional, radius 1rem) ✨ NUEVO
+- **Arquitectura de temas**: Variables CSS en `app/globals.css`. Clases `glass` y `glass-panel` con variantes por tema. Fondos degradados directamente en `body.theme-*`.
+- **Navegación mejorada**:
+  - `CommandPalette` (⌘K): búsqueda rápida con navegación por teclado, historial de recientes.
+  - `Sidebar` colapsable: modo icono (72px) o expandido (240px), persiste en Zustand.
+  - `MobileNav`: barra inferior fija en mobile (< lg), con accesos directos por categoría.
+  - `Header`: breadcrumbs del tool activo, trigger de ⌘K, manager de temas.
+- **Store** (`lib/store.ts`): `visualStyle`, `sidebarCollapsed`, `commandPaletteOpen`, `recentToolIds` (últimos 6).
+- **Dependencias previas**: `@mlc-ai/web-llm` (IA Local), `zustand` (Estado), `next-themes` (Modo oscuro/claro extendido).
 
 ## Microservicio (Heatmap)
 - **Ruta**: `/microservice/`

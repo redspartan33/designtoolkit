@@ -4,6 +4,9 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
+import { MobileNav } from "@/components/layout/mobile-nav";
+import { CommandPalette } from "@/components/layout/command-palette";
+import { StyleProvider } from "@/components/layout/style-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -17,11 +20,9 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-import { StyleProvider } from "@/components/layout/style-provider";
-
 export const metadata: Metadata = {
   title: "DesignKit",
-  description: "Plataforma de herramientas para diseño",
+  description: "Tu suite premium de herramientas de diseño",
 };
 
 export default function RootLayout({
@@ -42,16 +43,28 @@ export default function RootLayout({
         >
           <StyleProvider>
             <TooltipProvider>
-            <div className="flex h-screen overflow-hidden p-4 lg:p-6 gap-6">
-              <Sidebar className="glass rounded-[2rem] shadow-2xl" />
-              <div className="flex flex-1 flex-col overflow-hidden gap-6">
-                <Header className="glass rounded-[2rem] shadow-xl px-8" />
-                <main className="flex-1 overflow-auto rounded-[2rem] glass-panel p-8 shadow-2xl">
-                  <div className="mx-auto max-w-6xl">{children}</div>
-                </main>
+              {/* Desktop layout */}
+              <div className="hidden lg:flex h-screen overflow-hidden p-4 gap-4">
+                <Sidebar className="glass rounded-[2rem] shadow-2xl" />
+                <div className="flex flex-1 flex-col overflow-hidden gap-4">
+                  <Header className="glass rounded-[2rem] shadow-xl px-2" />
+                  <main className="flex-1 overflow-auto rounded-[2rem] glass-panel shadow-xl">
+                    <div className="mx-auto max-w-6xl p-8">{children}</div>
+                  </main>
+                </div>
               </div>
-            </div>
-            <Toaster />
+
+              {/* Mobile layout */}
+              <div className="lg:hidden flex flex-col min-h-screen">
+                <Header className="glass border-b border-white/10 px-2 shrink-0" />
+                <main className="flex-1 overflow-auto pb-20">
+                  <div className="max-w-2xl mx-auto p-4">{children}</div>
+                </main>
+                <MobileNav />
+              </div>
+
+              <CommandPalette />
+              <Toaster />
             </TooltipProvider>
           </StyleProvider>
         </ThemeProvider>

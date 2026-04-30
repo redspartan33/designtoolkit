@@ -112,6 +112,186 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* ===== Theme: Glass Aurora (Purple/Teal Glassmorphism) ===== */
+.theme-aurora {
+  --background: oklch(0.98 0.015 285);
+  --foreground: oklch(0.18 0.06 285);
+  --card: oklch(1 0 0 / 35%);
+  --card-foreground: oklch(0.18 0.06 285);
+  --popover: oklch(1 0 0 / 92%);
+  --popover-foreground: oklch(0.18 0.06 285);
+  --primary: oklch(0.55 0.27 285);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.95 0.03 285);
+  --secondary-foreground: oklch(0.18 0.06 285);
+  --muted: oklch(0.95 0.02 285);
+  --muted-foreground: oklch(0.52 0.06 285);
+  --accent: oklch(0.72 0.18 160);
+  --accent-foreground: oklch(0.18 0.06 285);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.88 0.05 285 / 50%);
+  --input: oklch(0.93 0.03 285 / 70%);
+  --ring: oklch(0.55 0.27 285);
+  --radius: 1.25rem;
+  --sidebar: oklch(1 0 0 / 25%);
+  --sidebar-foreground: oklch(0.18 0.06 285);
+  --sidebar-primary: oklch(0.55 0.27 285);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.95 0.03 285 / 50%);
+  --sidebar-accent-foreground: oklch(0.18 0.06 285);
+  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-ring: oklch(0.55 0.27 285);
+}
+
+.dark.theme-aurora {
+  --background: oklch(0.1 0.05 285);
+  --foreground: oklch(0.94 0.02 285);
+  --card: oklch(0 0 0 / 40%);
+  --card-foreground: oklch(0.94 0.02 285);
+  --popover: oklch(0.18 0.07 285 / 95%);
+  --popover-foreground: oklch(0.94 0.02 285);
+  --primary: oklch(0.72 0.26 290);
+  --primary-foreground: oklch(0.1 0.05 285);
+  --secondary: oklch(0.22 0.08 285);
+  --secondary-foreground: oklch(0.94 0.02 285);
+  --muted: oklch(0.22 0.05 285);
+  --muted-foreground: oklch(0.65 0.08 285);
+  --accent: oklch(0.72 0.18 160);
+  --accent-foreground: oklch(0.1 0.05 285);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 10%);
+  --ring: oklch(0.72 0.26 290);
+  --sidebar: oklch(0 0 0 / 40%);
+  --sidebar-foreground: oklch(0.94 0.02 285);
+  --sidebar-primary: oklch(0.72 0.26 290);
+  --sidebar-primary-foreground: oklch(0.1 0.05 285);
+  --sidebar-accent: oklch(1 0 0 / 8%);
+  --sidebar-accent-foreground: oklch(0.94 0.02 285);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.72 0.26 290);
+}
+
+/* ===== Theme: Neon Cyber (Terminal/Dark Hacker) ===== */
+.theme-cyber {
+  --background: #f0f0eb;
+  --foreground: #0a0a0a;
+  --card: #ffffff;
+  --card-foreground: #0a0a0a;
+  --popover: #ffffff;
+  --popover-foreground: #0a0a0a;
+  --primary: #007a3d;
+  --primary-foreground: #ffffff;
+  --secondary: #e8e8e3;
+  --secondary-foreground: #0a0a0a;
+  --muted: #e8e8e3;
+  --muted-foreground: #6b6b6b;
+  --accent: #cc0052;
+  --accent-foreground: #ffffff;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: #d4d4cf;
+  --input: #e8e8e3;
+  --ring: #007a3d;
+  --radius: 0.375rem;
+  --sidebar: #f0f0eb;
+  --sidebar-foreground: #0a0a0a;
+  --sidebar-primary: #007a3d;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e8e8e3;
+  --sidebar-accent-foreground: #0a0a0a;
+  --sidebar-border: #d4d4cf;
+  --sidebar-ring: #007a3d;
+}
+
+.dark.theme-cyber {
+  --background: #0d0d0d;
+  --foreground: #e0e0e0;
+  --card: #141414;
+  --card-foreground: #e0e0e0;
+  --popover: #1a1a1a;
+  --popover-foreground: #e0e0e0;
+  --primary: #00ff88;
+  --primary-foreground: #000000;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #e0e0e0;
+  --muted: #1a1a1a;
+  --muted-foreground: #888888;
+  --accent: #ff0066;
+  --accent-foreground: #ffffff;
+  --destructive: #ff3333;
+  --border: #282828;
+  --input: #1e1e1e;
+  --ring: #00ff88;
+  --sidebar: #0d0d0d;
+  --sidebar-foreground: #e0e0e0;
+  --sidebar-primary: #00ff88;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #1a1a1a;
+  --sidebar-accent-foreground: #e0e0e0;
+  --sidebar-border: #282828;
+  --sidebar-ring: #00ff88;
+}
+
+/* ===== Theme: Ocean (Clean Maritime Blue) ===== */
+.theme-ocean {
+  --background: #f0f7ff;
+  --foreground: #0f2744;
+  --card: #ffffff;
+  --card-foreground: #0f2744;
+  --popover: #ffffff;
+  --popover-foreground: #0f2744;
+  --primary: #0066cc;
+  --primary-foreground: #ffffff;
+  --secondary: #e1effe;
+  --secondary-foreground: #0f2744;
+  --muted: #e8f2ff;
+  --muted-foreground: #4a6a8a;
+  --accent: #00b4d8;
+  --accent-foreground: #ffffff;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: #c0d8f0;
+  --input: #e1effe;
+  --ring: #0066cc;
+  --radius: 1rem;
+  --sidebar: #f0f7ff;
+  --sidebar-foreground: #0f2744;
+  --sidebar-primary: #0066cc;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e1effe;
+  --sidebar-accent-foreground: #0f2744;
+  --sidebar-border: #c0d8f0;
+  --sidebar-ring: #0066cc;
+}
+
+.dark.theme-ocean {
+  --background: #020b18;
+  --foreground: #dceeff;
+  --card: #071828;
+  --card-foreground: #dceeff;
+  --popover: #0d2035;
+  --popover-foreground: #dceeff;
+  --primary: #3b9eff;
+  --primary-foreground: #020b18;
+  --secondary: #0d2035;
+  --secondary-foreground: #dceeff;
+  --muted: #0d2035;
+  --muted-foreground: #6a9ab8;
+  --accent: #00c8f0;
+  --accent-foreground: #020b18;
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: #0d2a44;
+  --input: #0d2035;
+  --ring: #3b9eff;
+  --sidebar: #020b18;
+  --sidebar-foreground: #dceeff;
+  --sidebar-primary: #3b9eff;
+  --sidebar-primary-foreground: #020b18;
+  --sidebar-accent: #0d2035;
+  --sidebar-accent-foreground: #dceeff;
+  --sidebar-border: #0d2a44;
+  --sidebar-ring: #3b9eff;
+}
+
 /* Theme: Earth (Bento/Warm) */
 .theme-earth {
   --background: #ece8e1;
@@ -182,6 +362,19 @@
       @apply bg-card border border-border shadow-sm transition-all duration-300;
       box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
     }
+    .theme-aurora & {
+      @apply bg-white/30 dark:bg-white/5 backdrop-blur-2xl saturate-150;
+      border: 1px solid oklch(0.75 0.15 285 / 0.25);
+      box-shadow: 0 8px 32px 0 oklch(0.55 0.27 285 / 0.08), inset 0 1px 0 rgba(255,255,255,0.3);
+    }
+    .theme-cyber & {
+      @apply bg-card border border-border transition-all duration-200;
+    }
+    .theme-ocean & {
+      @apply bg-white/80 dark:bg-card/80 backdrop-blur-xl;
+      border: 1px solid rgba(0, 102, 204, 0.18);
+      box-shadow: 0 4px 24px rgba(0, 102, 204, 0.06);
+    }
   }
   .glass-panel {
     .theme-nature & {
@@ -189,15 +382,26 @@
       box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.1);
     }
     .theme-earth & {
-      @apply bg-[#f4f1ed] dark:bg-[#1a1a1a] border border-border p-4 shadow-inner;
+      @apply bg-[#f4f1ed] dark:bg-[#1a1a1a] border border-border shadow-inner;
+    }
+    .theme-aurora & {
+      @apply bg-white/50 dark:bg-black/50 backdrop-blur-3xl;
+      border: 1px solid oklch(0.75 0.15 285 / 0.20);
+      box-shadow: 0 20px 60px 0 oklch(0.55 0.27 285 / 0.10);
+    }
+    .theme-cyber & {
+      @apply bg-background border border-border;
+    }
+    .theme-ocean & {
+      @apply bg-[#e8f2ff] dark:bg-[#071828] border border-border;
     }
   }
   .bg-nature {
     .theme-nature & {
       background-color: #f1f8e9;
-      background-image: 
-        radial-gradient(at 0% 0%, hsla(160, 84%, 93%, 1) 0, transparent 50%), 
-        radial-gradient(at 50% 0%, hsla(190, 84%, 93%, 1) 0, transparent 50%), 
+      background-image:
+        radial-gradient(at 0% 0%, hsla(160, 84%, 93%, 1) 0, transparent 50%),
+        radial-gradient(at 50% 0%, hsla(190, 84%, 93%, 1) 0, transparent 50%),
         radial-gradient(at 100% 0%, hsla(220, 84%, 93%, 1) 0, transparent 50%),
         radial-gradient(at 0% 50%, hsla(140, 84%, 93%, 1) 0, transparent 50%),
         radial-gradient(at 100% 50%, hsla(240, 84%, 93%, 1) 0, transparent 50%),
@@ -210,9 +414,9 @@
   .dark .bg-nature {
     .theme-nature & {
       background-color: #000c0f;
-      background-image: 
-        radial-gradient(at 0% 0%, hsla(160, 84%, 5%, 1) 0, transparent 50%), 
-        radial-gradient(at 50% 0%, hsla(190, 84%, 5%, 1) 0, transparent 50%), 
+      background-image:
+        radial-gradient(at 0% 0%, hsla(160, 84%, 5%, 1) 0, transparent 50%),
+        radial-gradient(at 50% 0%, hsla(190, 84%, 5%, 1) 0, transparent 50%),
         radial-gradient(at 100% 0%, hsla(220, 84%, 5%, 1) 0, transparent 50%),
         radial-gradient(at 0% 50%, hsla(140, 84%, 5%, 1) 0, transparent 50%),
         radial-gradient(at 100% 50%, hsla(240, 84%, 5%, 1) 0, transparent 50%),
@@ -224,6 +428,49 @@
   .bento-card {
     @apply bg-card rounded-[2.5rem] border border-border p-6 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
   }
+}
+
+/* Aurora gradient backgrounds */
+body.theme-aurora {
+  background-image:
+    radial-gradient(at 0% 0%, hsla(285, 80%, 90%, 0.7) 0, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(330, 80%, 90%, 0.5) 0, transparent 50%),
+    radial-gradient(at 50% 100%, hsla(180, 80%, 90%, 0.5) 0, transparent 50%),
+    radial-gradient(at 0% 100%, hsla(260, 80%, 88%, 0.4) 0, transparent 40%),
+    radial-gradient(at 100% 100%, hsla(200, 80%, 88%, 0.4) 0, transparent 40%);
+  background-attachment: fixed;
+}
+html.dark body.theme-aurora {
+  background-image:
+    radial-gradient(at 0% 0%, hsla(285, 100%, 20%, 0.8) 0, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(330, 100%, 16%, 0.6) 0, transparent 50%),
+    radial-gradient(at 50% 100%, hsla(180, 100%, 12%, 0.6) 0, transparent 50%),
+    radial-gradient(at 25% 55%, hsla(260, 100%, 22%, 0.5) 0, transparent 40%),
+    radial-gradient(at 75% 35%, hsla(200, 100%, 16%, 0.5) 0, transparent 40%);
+  background-attachment: fixed;
+}
+
+/* Ocean gradient backgrounds */
+body.theme-ocean {
+  background-image:
+    radial-gradient(at 0% 0%, rgba(200, 225, 255, 0.7) 0, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(180, 235, 255, 0.5) 0, transparent 50%);
+  background-attachment: fixed;
+}
+html.dark body.theme-ocean {
+  background-image:
+    radial-gradient(at 0% 0%, rgba(0, 40, 100, 0.9) 0, transparent 55%),
+    radial-gradient(at 100% 100%, rgba(0, 60, 120, 0.7) 0, transparent 55%),
+    radial-gradient(at 50% 40%, rgba(0, 30, 80, 0.4) 0, transparent 60%);
+  background-attachment: fixed;
+}
+
+/* Cyber dark neon glow on glass elements */
+html.dark body.theme-cyber .glass {
+  box-shadow: 0 0 0 1px rgba(0, 255, 136, 0.10), 0 4px 20px rgba(0, 255, 136, 0.04);
+}
+html.dark body.theme-cyber .glass-panel {
+  box-shadow: inset 0 1px 0 rgba(0, 255, 136, 0.05);
 }
 
 @layer base {

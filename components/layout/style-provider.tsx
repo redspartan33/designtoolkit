@@ -1,7 +1,17 @@
 'use client';
 
-import { useUIStore } from '@/lib/store';
+import { useUIStore, type VisualStyle } from '@/lib/store';
 import { useEffect, useState } from 'react';
+
+const BG_CLASSES: Record<VisualStyle, string | null> = {
+  nature: 'bg-nature',
+  earth: null,
+  aurora: null,
+  cyber: null,
+  ocean: null,
+};
+
+const ALL_THEMES: VisualStyle[] = ['nature', 'earth', 'aurora', 'cyber', 'ocean'];
 
 export function StyleProvider({ children }: { children: React.ReactNode }) {
   const { visualStyle } = useUIStore();
@@ -13,22 +23,22 @@ export function StyleProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!mounted) return;
-    
+
     const body = document.body;
-    // Remove old classes
-    body.classList.remove('theme-nature', 'theme-earth');
-    // Add new class
+
+    // Remove all theme classes
+    ALL_THEMES.forEach((t) => body.classList.remove(`theme-${t}`));
+    // Remove all bg classes
+    body.classList.remove('bg-nature');
+
+    // Add current theme
     body.classList.add(`theme-${visualStyle}`);
-    
-    // Toggle bg-nature based on theme
-    if (visualStyle === 'nature') {
-      body.classList.add('bg-nature');
-    } else {
-      body.classList.remove('bg-nature');
-    }
+
+    // Add bg class if needed (nature uses a utility class for its gradient)
+    const bgClass = BG_CLASSES[visualStyle];
+    if (bgClass) body.classList.add(bgClass);
   }, [visualStyle, mounted]);
 
-  // Prevent hydration mismatch
   if (!mounted) return <>{children}</>;
 
   return <>{children}</>;

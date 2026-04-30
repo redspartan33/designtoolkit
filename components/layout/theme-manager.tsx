@@ -1,8 +1,7 @@
 'use client';
 
-import { useUIStore } from '@/lib/store';
-import { Button } from '@/components/ui/button';
-import { Layout, Palette, Check } from 'lucide-react';
+import { useUIStore, type VisualStyle } from '@/lib/store';
+import { Check, Palette } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
@@ -11,52 +10,78 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+const themes: {
+  id: VisualStyle;
+  name: string;
+  description: string;
+  preview: string;
+}[] = [
+  {
+    id: 'nature',
+    name: 'Glass Nature',
+    description: 'Glassmorphic con naturaleza',
+    preview: 'bg-gradient-to-br from-emerald-300 to-teal-400',
+  },
+  {
+    id: 'earth',
+    name: 'Bento Earth',
+    description: 'Cálido, sólido y minimalista',
+    preview: 'bg-gradient-to-br from-amber-400 to-orange-500',
+  },
+  {
+    id: 'aurora',
+    name: 'Glass Aurora',
+    description: 'Cristal con aurora boreal',
+    preview: 'bg-gradient-to-br from-violet-500 via-purple-400 to-teal-400',
+  },
+  {
+    id: 'cyber',
+    name: 'Neon Cyber',
+    description: 'Terminal con efecto neon',
+    preview: 'bg-gradient-to-br from-green-400 to-emerald-600',
+  },
+  {
+    id: 'ocean',
+    name: 'Ocean',
+    description: 'Azul marino y limpio',
+    preview: 'bg-gradient-to-br from-blue-400 to-cyan-500',
+  },
+];
+
 export function ThemeManager() {
   const { visualStyle, setVisualStyle } = useUIStore();
 
-  const themes = [
-    {
-      id: 'nature',
-      name: 'Glass Nature',
-      description: 'Efectos de cristal y naturaleza',
-      icon: Layout,
-      color: 'bg-emerald-500',
-    },
-    {
-      id: 'earth',
-      name: 'Bento Earth',
-      description: 'Cálido, minimalista y sólido',
-      icon: Palette,
-      color: 'bg-amber-600',
-    },
-  ] as const;
+  const active = themes.find((t) => t.id === visualStyle);
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center justify-center size-10 rounded-xl glass border-white/10 hover:bg-white/20 transition-all cursor-pointer outline-none focus:ring-2 focus:ring-primary">
-        <Palette className="h-5 w-5" />
+      <DropdownMenuTrigger className="flex items-center gap-2 h-9 px-3 rounded-xl glass border-white/10 hover:bg-white/20 transition-all cursor-pointer outline-none focus:ring-2 focus:ring-primary text-sm font-medium">
+        <div className={cn('size-4 rounded-full shrink-0', active?.preview ?? 'bg-primary')} />
+        <span className="hidden sm:inline text-foreground/80">{active?.name}</span>
+        <Palette className="h-4 w-4 text-muted-foreground" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-64 p-2 glass border-white/10 rounded-2xl">
-        <div className="px-2 py-2 text-xs font-bold uppercase tracking-widest text-muted-foreground">
-          Estilo Visual
+
+      <DropdownMenuContent align="end" className="w-60 p-2 glass border-white/10 rounded-2xl">
+        <div className="px-2 py-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">
+          Tema Visual
         </div>
         {themes.map((theme) => (
           <DropdownMenuItem
             key={theme.id}
             onClick={() => setVisualStyle(theme.id)}
             className={cn(
-              "flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all mb-1",
-              visualStyle === theme.id ? "bg-primary text-primary-foreground" : "hover:bg-white/10"
+              'flex items-center gap-3 p-2.5 rounded-xl cursor-pointer transition-all mb-0.5',
+              visualStyle === theme.id
+                ? 'bg-primary text-primary-foreground'
+                : 'hover:bg-white/10'
             )}
           >
-            <div className={cn("p-2 rounded-lg", theme.color)}>
-              <theme.icon className="w-4 h-4 text-white" />
+            <div className={cn('size-8 rounded-lg shrink-0', theme.preview)} />
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-bold leading-tight">{theme.name}</div>
+              <div className="text-[10px] opacity-70 leading-tight truncate">{theme.description}</div>
             </div>
-            <div className="flex-1">
-              <div className="text-sm font-bold">{theme.name}</div>
-              <div className="text-[10px] opacity-70 leading-tight">{theme.description}</div>
-            </div>
-            {visualStyle === theme.id && <Check className="w-4 h-4" />}
+            {visualStyle === theme.id && <Check className="w-4 h-4 shrink-0" />}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
