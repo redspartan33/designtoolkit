@@ -1,156 +1,130 @@
 "use client";
 
-import { useState } from "react";
-import { Search, Sparkles, Clock } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import { Search, X } from "lucide-react";
 import { toolsRegistry } from "@/lib/tools-registry";
-import { ToolCard } from "@/components/tools/tool-card";
-import { Input } from "@/components/ui/input";
-import { ToolCategory } from "@/lib/types";
-import { cn } from "@/lib/utils";
 import { useUIStore } from "@/lib/store";
+import { ThemeManager } from "@/components/layout/theme-manager";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { ToolCard } from "@/components/tools/tool-card";
+import { cn } from "@/lib/utils";
+import { ToolCategory } from "@/lib/types";
 
-const categories: (ToolCategory | "Todas")[] = [
-  "Todas",
-  "Imagen",
-  "Color",
-  "Código",
-  "Análisis",
-  "Layout",
-  "Escritura",
+const CATEGORIES: (ToolCategory | "Todas")[] = [
+  "Todas", "Imagen", "Color", "Código", "Análisis", "Layout", "Escritura",
 ];
 
-const STATS = [
-  { value: `${toolsRegistry.length}`, label: "Herramientas" },
-  { value: toolsRegistry.filter((t) => t.status === "stable").length.toString(), label: "Estables" },
-  { value: "100%", label: "Local & Privado" },
-  { value: "0", label: "Datos enviados" },
-];
-
-export default function Dashboard() {
-  const [searchQuery, setSearchQuery] = useState("");
+export default function HomePage() {
+  const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<ToolCategory | "Todas">("Todas");
-  const { setCommandPaletteOpen, recentToolIds } = useUIStore();
+  const { toolUsageCounts } = useUIStore();
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const filteredTools = toolsRegistry.filter((tool) => {
-    const matchesSearch =
-      tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      tool.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      tool.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesCategory =
-      activeCategory === "Todas" || tool.category === activeCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const sortedAndFiltered = useMemo(() => {
+    const lower = query.toLowerCase().trim();
 
-  const recentTools = recentToolIds
-    .map((id) => toolsRegistry.find((t) => t.id === id))
-    .filter(Boolean) as typeof toolsRegistry;
+    const filtered = toolsRegistry.filter((tool) => {
+      const matchesSearch =
+        !lower ||
+        tool.name.toLowerCase().includes(lower) ||
+        tool.description.toLowerCase().includes(lower) ||
+        tool.tags.some((tag) => tag.includes(lower));
+      const matchesCategory =
+        activeCategory === "Todas" || tool.category === activeCategory;
+      return matchesSearch && matchesCategory;
+    });
+
+    // Sort by usage count descending, preserving original order for ties
+    return [...filtered].sort(
+      (a, b) => (toolUsageCounts[b.id] || 0) - (toolUsageCounts[a.id] || 0)
+    );
+  }, [query, activeCategory, toolUsageCounts]);
 
   return (
-    <div className="flex flex-col gap-10 pb-10">
-      {/* Hero */}
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full glass border-white/10 text-xs font-semibold text-muted-foreground">
-            <Sparkles className="h-3 w-3 text-primary" />
-            Fase 8 · Suite completa
+    <div className="min-h-screen flex flex-col bg-background">
+      {/* Top bar */}
+      <header className="sticky top-0 z-50 glass border-b border-white/10">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <div className="size-7 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-black text-sm shrink-0">
+              D
+            </div>
+            <span className="font-black text-sm tracking-tight">DesignKit</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <ThemeManager />
+            <ThemeToggle />
           </div>
         </div>
-        <h1 className="text-4xl sm:text-5xl font-black tracking-tight leading-[1.1] bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent">
-          Herramientas de<br />diseño premium
-        </h1>
-        <p className="text-base text-muted-foreground max-w-lg leading-relaxed">
-          Suite completa para diseñadores y devs. Todo corre en tu navegador — sin servidores, sin rastreo, sin límites.
-        </p>
-      </div>
+      </header>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {STATS.map(({ value, label }) => (
-          <div key={label} className="glass rounded-2xl px-4 py-3 flex flex-col gap-1">
-            <span className="text-2xl font-black tracking-tight">{value}</span>
-            <span className="text-xs text-muted-foreground font-medium">{label}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Recent tools */}
-      {recentTools.length > 0 && (
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground/60">
-            <Clock className="h-3 w-3" />
-            Usados recientemente
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {recentTools.map((tool) => {
-              const Icon = tool.icon;
-              return (
-                <a
-                  key={tool.id}
-                  href={tool.route}
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl glass border-white/10 hover:bg-white/20 transition-all duration-200 text-sm font-medium"
-                >
-                  <Icon className="h-3.5 w-3.5 text-primary" />
-                  {tool.name}
-                </a>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Search + Filters */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
-          <Input
-            placeholder="Buscar herramienta... (⌘K)"
-            className="pl-10 h-11 bg-white/20 dark:bg-black/20 border-white/10 rounded-xl text-sm cursor-text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onFocus={() => {
-              if (!searchQuery) setCommandPaletteOpen(true);
-            }}
-            readOnly={!searchQuery}
+      {/* Search section */}
+      <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-10 pb-6 flex flex-col gap-4">
+        {/* Search input */}
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
+          <input
+            ref={inputRef}
+            autoFocus
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Buscar herramienta..."
+            className="w-full h-14 pl-12 pr-12 text-base glass border-white/10 rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 transition-all duration-200 bg-transparent placeholder:text-muted-foreground/60"
           />
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          {categories.map((category) => (
+          {query && (
             <button
-              key={category}
-              onClick={() => setActiveCategory(category)}
+              onClick={() => { setQuery(""); inputRef.current?.focus(); }}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Category pills */}
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
               className={cn(
-                "px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-200 border",
-                activeCategory === category
-                  ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                  : "bg-white/20 dark:bg-black/20 text-foreground border-white/10 hover:bg-white/30 dark:hover:bg-black/30"
+                "px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-200 shrink-0",
+                activeCategory === cat
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "glass border-white/10 text-muted-foreground hover:text-foreground"
               )}
             >
-              {category}
+              {cat}
             </button>
           ))}
         </div>
       </div>
 
       {/* Tools grid */}
-      {filteredTools.length > 0 ? (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredTools.map((tool) => (
-            <ToolCard key={tool.id} tool={tool} />
-          ))}
-        </div>
-      ) : (
-        <div className="flex h-56 flex-col items-center justify-center rounded-2xl glass text-center gap-3">
-          <div className="rounded-2xl bg-muted p-3">
-            <Search className="h-5 w-5 text-muted-foreground" />
+      <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 pb-12">
+        {sortedAndFiltered.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {sortedAndFiltered.map((tool, i) => (
+              <ToolCard key={tool.id} tool={tool} index={i} />
+            ))}
           </div>
-          <div>
-            <h3 className="text-sm font-bold">Sin resultados</h3>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Intenta con otros términos o cambia la categoría
+        ) : (
+          <div className="flex flex-col items-center justify-center py-24 gap-3 text-center">
+            <div className="size-12 rounded-2xl glass flex items-center justify-center">
+              <Search className="h-5 w-5 text-muted-foreground" />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Sin resultados para <strong>"{query}"</strong>
             </p>
+            <button
+              onClick={() => { setQuery(""); setActiveCategory("Todas"); }}
+              className="text-xs text-primary hover:underline"
+            >
+              Limpiar búsqueda
+            </button>
           </div>
-        </div>
-      )}
+        )}
+      </main>
     </div>
   );
 }

@@ -7,36 +7,34 @@ export type VisualStyle = 'nature' | 'earth' | 'aurora' | 'cyber' | 'ocean';
 
 interface UIState {
   visualStyle: VisualStyle;
-  sidebarCollapsed: boolean;
   commandPaletteOpen: boolean;
-  recentToolIds: string[];
+  toolUsageCounts: Record<string, number>;
   setVisualStyle: (style: VisualStyle) => void;
-  setSidebarCollapsed: (collapsed: boolean) => void;
   setCommandPaletteOpen: (open: boolean) => void;
-  addRecentTool: (id: string) => void;
+  incrementToolUsage: (id: string) => void;
 }
 
 export const useUIStore = create<UIState>()(
   persist(
     (set) => ({
       visualStyle: 'nature',
-      sidebarCollapsed: false,
       commandPaletteOpen: false,
-      recentToolIds: [],
+      toolUsageCounts: {},
       setVisualStyle: (style) => set({ visualStyle: style }),
-      setSidebarCollapsed: (collapsed) => set({ sidebarCollapsed: collapsed }),
       setCommandPaletteOpen: (open) => set({ commandPaletteOpen: open }),
-      addRecentTool: (id) =>
+      incrementToolUsage: (id) =>
         set((state) => ({
-          recentToolIds: [id, ...state.recentToolIds.filter((i) => i !== id)].slice(0, 6),
+          toolUsageCounts: {
+            ...state.toolUsageCounts,
+            [id]: (state.toolUsageCounts[id] || 0) + 1,
+          },
         })),
     }),
     {
       name: 'ui-storage',
       partialize: (state) => ({
         visualStyle: state.visualStyle,
-        sidebarCollapsed: state.sidebarCollapsed,
-        recentToolIds: state.recentToolIds,
+        toolUsageCounts: state.toolUsageCounts,
       }),
     }
   )

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, ArrowRight, Clock, Hash } from 'lucide-react';
 import { toolsRegistry } from '@/lib/tools-registry';
@@ -10,36 +10,39 @@ import { cn } from '@/lib/utils';
 type Tool = (typeof toolsRegistry)[0];
 
 export function CommandPalette() {
-  const { commandPaletteOpen, setCommandPaletteOpen, recentToolIds, addRecentTool } = useUIStore();
+  const { commandPaletteOpen, setCommandPaletteOpen, toolUsageCounts } = useUIStore();
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
+  const sortedTools = useMemo(
+    () =>
+      [...toolsRegistry].sort(
+        (a, b) => (toolUsageCounts[b.id] || 0) - (toolUsageCounts[a.id] || 0)
+      ),
+    [toolUsageCounts]
+  );
+
   const filtered: Tool[] = query.trim()
-    ? toolsRegistry.filter(
+    ? sortedTools.filter(
         (t) =>
           t.name.toLowerCase().includes(query.toLowerCase()) ||
           t.description.toLowerCase().includes(query.toLowerCase()) ||
           t.tags.some((tag) => tag.includes(query.toLowerCase()))
       )
-    : recentToolIds.length > 0
-    ? toolsRegistry
-        .filter((t) => recentToolIds.includes(t.id))
-        .sort((a, b) => recentToolIds.indexOf(a.id) - recentToolIds.indexOf(b.id))
-    : toolsRegistry.slice(0, 8);
+    : sortedTools.slice(0, 8);
 
-  const showingRecents = !query.trim() && recentToolIds.length > 0;
-  const showingAll = !query.trim() && recentToolIds.length === 0;
+  const showingRecents = !query.trim() && Object.keys(toolUsageCounts).length > 0;
+  const showingAll = !query.trim() && Object.keys(toolUsageCounts).length === 0;
 
   const handleNavigate = useCallback(
     (tool: Tool) => {
-      addRecentTool(tool.id);
       setCommandPaletteOpen(false);
       setQuery('');
       router.push(tool.route);
     },
-    [addRecentTool, setCommandPaletteOpen, router]
+    [setCommandPaletteOpen, router]
   );
 
   const close = useCallback(() => {

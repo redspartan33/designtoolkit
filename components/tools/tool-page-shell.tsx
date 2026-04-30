@@ -1,9 +1,12 @@
-import React from "react";
+'use client';
+
+import React, { useEffect } from "react";
 import Link from "next/link";
-import { ChevronRight, Home } from "lucide-react";
+import { ArrowLeft, Lock, Server } from "lucide-react";
 import { toolsRegistry } from "@/lib/tools-registry";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+import { useUIStore } from "@/lib/store";
+import { ThemeManager } from "@/components/layout/theme-manager";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { cn } from "@/lib/utils";
 
 interface ToolPageShellProps {
@@ -13,13 +16,20 @@ interface ToolPageShellProps {
 
 export function ToolPageShell({ toolId, children }: ToolPageShellProps) {
   const tool = toolsRegistry.find((t) => t.id === toolId);
+  const { incrementToolUsage } = useUIStore();
+
+  useEffect(() => {
+    if (tool) incrementToolUsage(tool.id);
+    // Only run once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tool?.id]);
 
   if (!tool) {
     return (
-      <div className="flex h-[50vh] flex-col items-center justify-center gap-4">
-        <h2 className="text-2xl font-bold">Herramienta no encontrada</h2>
-        <Link href="/" className="text-primary hover:underline">
-          Volver al inicio
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-background">
+        <h2 className="text-xl font-bold">Herramienta no encontrada</h2>
+        <Link href="/" className="text-sm text-primary hover:underline">
+          ← Volver al inicio
         </Link>
       </div>
     );
@@ -28,47 +38,63 @@ export function ToolPageShell({ toolId, children }: ToolPageShellProps) {
   const Icon = tool.icon;
 
   return (
-    <div className="flex flex-col space-y-6">
-      {/* Breadcrumb */}
-      <div className="flex items-center text-sm text-muted-foreground">
-        <Link href="/" className="flex items-center hover:text-foreground">
-          <Home className="mr-1 h-3 w-3" />
-          Inicio
-        </Link>
-        <ChevronRight className="mx-1 h-3 w-3" />
-        <span className="font-medium text-foreground">{tool.category}</span>
-        <ChevronRight className="mx-1 h-3 w-3" />
-        <span className="font-medium text-foreground">{tool.name}</span>
-      </div>
+    <div className="min-h-screen flex flex-col bg-background">
+      {/* Tool header */}
+      <header className="sticky top-0 z-50 glass border-b border-white/10">
+        <div className="px-4 sm:px-6 h-14 flex items-center gap-3">
+          {/* Back */}
+          <Link
+            href="/"
+            className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors shrink-0 mr-1"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <div className="size-6 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-black text-xs">
+              D
+            </div>
+          </Link>
 
-      {/* Header */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-        <div className="flex items-start gap-4">
-          <div className={cn(
-            "mt-1 rounded-2xl p-4 shadow-sm transition-colors duration-500",
-            "[.theme-nature_&]:bg-primary/10 [.theme-nature_&]:text-primary",
-            "[.theme-earth_&]:bg-accent [.theme-earth_&]:text-accent-foreground"
-          )}>
-            <Icon className="h-8 w-8" />
+          <div className="h-4 w-px bg-border/60 shrink-0" />
+
+          {/* Tool identity */}
+          <div className="flex items-center gap-2 flex-1 min-w-0">
+            <div className="p-1.5 rounded-lg bg-primary/10 text-primary shrink-0">
+              <Icon className="h-3.5 w-3.5" />
+            </div>
+            <span className="font-bold text-sm truncate">{tool.name}</span>
+
+            {/* Status badge */}
+            {tool.status === "beta" && (
+              <span className="text-[9px] font-black uppercase tracking-wide px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 shrink-0">
+                Beta
+              </span>
+            )}
+
+            {/* Privacy badge */}
+            <span className={cn(
+              "hidden sm:inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full bg-muted/60 text-muted-foreground shrink-0"
+            )}>
+              {tool.privacy === "local" ? (
+                <><Lock className="h-2.5 w-2.5" />Local</>
+              ) : (
+                <><Server className="h-2.5 w-2.5" />Server</>
+              )}
+            </span>
           </div>
-          <div>
-            <h1 className="text-4xl font-black tracking-tight">{tool.name}</h1>
-            <p className="mt-1 text-lg text-muted-foreground">
-              {tool.description}
-            </p>
+
+          {/* Controls */}
+          <div className="flex items-center gap-2 shrink-0">
+            <ThemeManager />
+            <ThemeToggle />
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Badge variant="outline">{tool.privacy === "local" ? "Local" : "Server"}</Badge>
-          {tool.status === "beta" && <Badge className="bg-blue-500">Beta</Badge>}
-          {tool.status === "coming-soon" && <Badge variant="secondary">Pronto</Badge>}
-        </div>
-      </div>
+      </header>
 
-      {/* Content Area */}
-      <div className="min-h-[400px]">
-        <div>{children}</div>
-      </div>
+      {/* Full-width content */}
+      <main className="flex-1">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+          {children}
+        </div>
+      </main>
     </div>
   );
 }
