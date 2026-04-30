@@ -28,6 +28,7 @@ import {
   BarChart2,
   ListOrdered,
   ScanLine,
+  Search,
 } from 'lucide-react';
 
 export const toolsRegistry: Tool[] = [
@@ -245,6 +246,17 @@ export const toolsRegistry: Tool[] = [
     status: 'stable',
     privacy: 'local',
     tags: ['ui', 'svg', 'optimizar', 'asset'],
+  },
+  {
+    id: 'icon-finder',
+    name: 'Buscador de Iconos',
+    description: 'Busca y copia iconos SVG de Lucide, Heroicons, Tabler, Phosphor y más.',
+    category: 'UI',
+    icon: Search,
+    route: '/tools/icon-finder',
+    status: 'stable',
+    privacy: 'server',
+    tags: ['ui', 'iconos', 'svg', 'lucide', 'heroicons', 'tabler', 'phosphor', 'iconify'],
   },
 
   // ── Research ─────────────────────────────────────────────────────────────────
