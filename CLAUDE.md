@@ -56,6 +56,33 @@ commandPaletteOpen: boolean
 Única fuente de verdad. Para añadir una herramienta:
 1. Crear `app/tools/[nombre]/page.tsx` usando `<ToolPageShell toolId="nombre">`.
 2. Añadir entrada al array en `lib/tools-registry.ts`.
+3. Si la categoría es nueva, añadirla al tipo `ToolCategory` en `lib/types.ts` **y** al array `CATEGORIES` en `app/page.tsx`.
+
+## Categorías de herramientas
+| Categoría | Descripción |
+|-----------|-------------|
+| `Imagen` | Procesamiento y edición de imágenes |
+| `Color` | Paletas, contrastes y escalas de color |
+| `Código` | QR, SVG, favicons |
+| `Análisis` | Heatmaps, análisis visual |
+| `Layout` | Mockups, placeholders, gradientes |
+| `Escritura` | Texto, copy, markdown |
+| `Diseño` | Proceso de diseño: briefs, sistemas, research, mapas de usuario |
+
+## Herramientas del Proceso de Diseño (Doble Diamante)
+Mapeadas a las 4 fases del Double Diamond:
+
+**Fase 1 — Entender el problema**
+- `brief-builder`: Wizard de 6 pasos para generar un design brief exportable como `.md`
+
+**Fase 2 — Explorar & validar**
+- `journey-map`: Mapa de viaje del usuario con curva emocional, touchpoints y oportunidades
+- `assumption-mapper`: Matriz 2×2 impacto × certeza para priorizar supuestos
+- `usability-script`: Generador de guiones para tests de usabilidad moderados
+
+**Fase 3 — Diseñar para escala**
+- `typography-scale`: Escalas tipográficas modulares con ratios clásicos, exporta CSS/JSON
+- `spacing-scale`: Sistemas de espaciado (múltiplos o Fibonacci), exporta CSS/Tailwind/JSON
 
 ## `ToolPageShell` (`components/tools/tool-page-shell.tsx`)
 - Es un **Client Component** (`'use client'`).
