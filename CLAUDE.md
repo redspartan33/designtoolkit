@@ -65,7 +65,7 @@ Las categorías reflejan el rol del usuario, no el tipo de asset. **Siempre** a�
 |-----------|-------------|-------------|
 | `Branding` | Identidad visual y voz de marca | palette-extractor, color-scale-generator, gradient-generator, favicon-generator, copy-assistant |
 | `UX` | Experiencia de usuario, flujos y presentación | heatmap-analyzer, journey-map, mockup-generator |
-| `UI` | Assets visuales y sistemas de diseño | contrast-checker, typography-scale, spacing-scale, redline-spec, placeholder-generator, lorem-ipsum, background-remover, image-compressor, format-converter, image-upscaler, svg-optimizer |
+| `UI` | Assets visuales y sistemas de diseño | contrast-checker, typography-scale, spacing-scale, redline-spec, placeholder-generator, lorem-ipsum, background-remover, image-compressor, format-converter, image-upscaler, svg-optimizer, icon-finder |
 | `Research` | Validación con usuarios y análisis de datos | usability-script, assumption-mapper, text-analyzer, ab-test-calculator |
 | `Product Management` | Planificación, priorización y documentación | brief-builder, rice-scorer, qr-generator, case-converter, markdown-previewer |
 
@@ -87,6 +87,9 @@ Las categorías reflejan el rol del usuario, no el tipo de asset. **Siempre** a�
 **Fase 4 — Lanzar & iterar**
 - `ab-test-calculator` (Research): Significancia estadística + calculadora de tamaño de muestra
 - `rice-scorer` (PM): Priorización RICE con panel de detalle expandible y exportación `.md`
+
+**Assets & utilidades visuales**
+- `icon-finder` (UI): Buscador de iconos sobre la API pública de [Iconify](https://iconify.design) (Lucide, Heroicons, Tabler, Phosphor, Material Symbols, MDI, Bootstrap, Remix, Iconoir, Simple Icons). Preview con tamaño/color, copy SVG/JSX, descarga `.svg`. Atajo `⌘C` para copiar. Marcado `privacy: 'server'` porque requiere red. El grid usa `mask-image` CSS apuntando al endpoint `.svg` para que cada icono herede `currentColor`.
 
 ## `ToolPageShell` (`components/tools/tool-page-shell.tsx`)
 - Es un **Client Component** (`'use client'`).
