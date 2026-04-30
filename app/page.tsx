@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import { ToolCategory } from "@/lib/types";
 
 const CATEGORIES: (ToolCategory | "Todas")[] = [
-  "Todas", "Imagen", "Color", "Código", "Análisis", "Layout", "Escritura", "Diseño",
+  "Todas", "Branding", "UX", "UI", "Research", "Product Management",
 ];
 
 export default function HomePage() {

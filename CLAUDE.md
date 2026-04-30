@@ -59,30 +59,34 @@ commandPaletteOpen: boolean
 3. Si la categoría es nueva, añadirla al tipo `ToolCategory` en `lib/types.ts` **y** al array `CATEGORIES` en `app/page.tsx`.
 
 ## Categorías de herramientas
-| Categoría | Descripción |
-|-----------|-------------|
-| `Imagen` | Procesamiento y edición de imágenes |
-| `Color` | Paletas, contrastes y escalas de color |
-| `Código` | QR, SVG, favicons |
-| `Análisis` | Heatmaps, análisis visual |
-| `Layout` | Mockups, placeholders, gradientes |
-| `Escritura` | Texto, copy, markdown |
-| `Diseño` | Proceso de diseño: briefs, sistemas, research, mapas de usuario |
+Las categorías reflejan el rol del usuario, no el tipo de asset. **Siempre** añadir nuevas categorías al tipo `ToolCategory` en `lib/types.ts` **y** al array `CATEGORIES` en `app/page.tsx`.
 
-## Herramientas del Proceso de Diseño (Doble Diamante)
-Mapeadas a las 4 fases del Double Diamond:
+| Categoría | Descripción | Herramientas |
+|-----------|-------------|-------------|
+| `Branding` | Identidad visual y voz de marca | palette-extractor, color-scale-generator, gradient-generator, favicon-generator, copy-assistant |
+| `UX` | Experiencia de usuario, flujos y presentación | heatmap-analyzer, journey-map, mockup-generator |
+| `UI` | Assets visuales y sistemas de diseño | contrast-checker, typography-scale, spacing-scale, redline-spec, placeholder-generator, lorem-ipsum, background-remover, image-compressor, format-converter, image-upscaler, svg-optimizer |
+| `Research` | Validación con usuarios y análisis de datos | usability-script, assumption-mapper, text-analyzer, ab-test-calculator |
+| `Product Management` | Planificación, priorización y documentación | brief-builder, rice-scorer, qr-generator, case-converter, markdown-previewer |
+
+## Inventario completo de herramientas (Doble Diamante)
 
 **Fase 1 — Entender el problema**
-- `brief-builder`: Wizard de 6 pasos para generar un design brief exportable como `.md`
+- `brief-builder` (PM): Wizard de 6 pasos → design brief `.md`
 
 **Fase 2 — Explorar & validar**
-- `journey-map`: Mapa de viaje del usuario con curva emocional, touchpoints y oportunidades
-- `assumption-mapper`: Matriz 2×2 impacto × certeza para priorizar supuestos
-- `usability-script`: Generador de guiones para tests de usabilidad moderados
+- `journey-map` (UX): Mapa de viaje con curva emocional SVG, touchpoints, pain points, oportunidades
+- `assumption-mapper` (Research): Matriz 2×2 impacto × certeza con notas y vista lista
+- `usability-script` (Research): Guiones de test de usabilidad con tareas, escenarios y secciones de preguntas
 
 **Fase 3 — Diseñar para escala**
-- `typography-scale`: Escalas tipográficas modulares con ratios clásicos, exporta CSS/JSON
-- `spacing-scale`: Sistemas de espaciado (múltiplos o Fibonacci), exporta CSS/Tailwind/JSON
+- `typography-scale` (UI): Ratios modulares (Minor 2nd → Golden Ratio), exporta CSS/JSON
+- `spacing-scale` (UI): Múltiplos o Fibonacci, exporta CSS/Tailwind/JSON
+- `redline-spec` (UI): Especificaciones de handoff con espaciado, tipografía, colores y componentes
+
+**Fase 4 — Lanzar & iterar**
+- `ab-test-calculator` (Research): Significancia estadística + calculadora de tamaño de muestra
+- `rice-scorer` (PM): Priorización RICE con panel de detalle expandible y exportación `.md`
 
 ## `ToolPageShell` (`components/tools/tool-page-shell.tsx`)
 - Es un **Client Component** (`'use client'`).
