@@ -30,7 +30,7 @@ export const toolsRegistry: Tool[] = [
     category: 'Imagen',
     icon: Eraser,
     route: '/tools/background-remover',
-    status: 'coming-soon',
+    status: 'beta',
     privacy: 'local',
     tags: ['imagen', 'fondo', 'remover'],
   },
