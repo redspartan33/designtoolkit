@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import { StyleProvider } from "@/components/layout/style-provider";
 import { CommandPalette } from "@/components/layout/command-palette";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -28,22 +26,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <StyleProvider>
-            <TooltipProvider>
-              {children}
-              <CommandPalette />
-              <Toaster />
-            </TooltipProvider>
-          </StyleProvider>
-        </ThemeProvider>
+    <html lang="es" className="dark" suppressHydrationWarning>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <TooltipProvider>
+          {children}
+          <CommandPalette />
+          <Toaster />
+        </TooltipProvider>
       </body>
     </html>
   );

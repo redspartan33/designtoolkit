@@ -20,32 +20,23 @@
 
 - **Homepage** (`app/page.tsx`): barra de búsqueda prominente + pills de categoría + grid de herramientas ordenado por las más usadas.
 - **Tool pages**: layout full-width con header mínimo propio (botón `← D` para volver al home).
-- **`app/layout.tsx`**: solo contiene los providers (`ThemeProvider`, `StyleProvider`, `TooltipProvider`, `CommandPalette`, `Toaster`). No define estructura visual.
+- **`app/layout.tsx`**: solo contiene `TooltipProvider`, `CommandPalette` y `Toaster`. Aplica `className="dark"` en `<html>` para forzar dark mode. No define estructura visual.
 - **`CommandPalette`** (`⌘K`): disponible en todas las páginas, herramientas ordenadas por uso.
 
 ## Sistema de Temas
-Hay 5 temas. El tipo es `VisualStyle` en `lib/store.ts`. Las variables CSS están en `app/globals.css`.
+**Tema único, dark-only.** No hay multi-tema, no hay light mode, no hay toggle.
 
-| ID | Nombre | Estética | Radius |
-|----|--------|----------|--------|
-| `nature` | Glass Nature | Glassmorphic verde/teal, fondo con degradados radiales | 1.25rem |
-| `earth` | Bento Earth | Cajas sólidas, tonos tierra cálidos, amarillo acento | 2.5rem |
-| `aurora` | Glass Aurora | Glassmorphic púrpura/teal, fondo aurora boreal | 1.25rem |
-| `cyber` | Neon Cyber | Terminal oscuro, primario neon `#00ff88`, acento rosa `#ff0066` | 0.375rem |
-| `ocean` | Ocean | Azul marino limpio y profesional | 1rem |
+- `<html className="dark">` está hardcoded en `app/layout.tsx`.
+- Las variables CSS viven en `:root` de `app/globals.css` — paleta inspirada en Joboost: fondo `#0c0814`, primario violeta `#8b5cf6`, acento crema `#f0e3c8`, radius base `1.5rem`.
+- El gradiente ambiental purpúreo se pinta directamente en `body { background-image: ... }`.
+- Las utilidades `.glass` y `.glass-panel` tienen una sola variante (no dependen del tema).
+- Hay una utilidad `.sparkle` con animación `sparkle-twinkle` para los acentos decorativos del home.
 
-**Cómo funcionan los temas:**
-- `StyleProvider` añade `theme-{id}` al `<body>`.
-- La clase utilitaria `.glass` y `.glass-panel` tienen variantes por tema dentro de `@layer utilities` en `globals.css`.
-- Los fondos degradados se aplican directamente con selectores `body.theme-aurora`, `html.dark body.theme-aurora`, etc.
-- El nature theme también necesita la clase `bg-nature` en body (la añade `StyleProvider`).
+Si necesitas reintroducir múltiples temas, hay que reescribir `globals.css`, `app/layout.tsx`, `lib/store.ts` y volver a meter un `StyleProvider`.
 
 ## Store (`lib/store.ts`)
 ```ts
-type VisualStyle = 'nature' | 'earth' | 'aurora' | 'cyber' | 'ocean'
-
 // Persisted:
-visualStyle: VisualStyle
 toolUsageCounts: Record<string, number>   // incrementa al entrar a cada tool
 
 // Session only:
@@ -94,7 +85,7 @@ Las categorías reflejan el rol del usuario, no el tipo de asset. **Siempre** a�
 ## `ToolPageShell` (`components/tools/tool-page-shell.tsx`)
 - Es un **Client Component** (`'use client'`).
 - Llama a `incrementToolUsage(tool.id)` en `useEffect` al montar.
-- Renderiza su propio header con botón de regreso, nombre de la herramienta, `ThemeManager` y `ThemeToggle`.
+- Renderiza su propio header con botón de regreso y nombre de la herramienta.
 - El contenido se envuelve en `max-w-6xl mx-auto px-4 sm:px-6 py-8`.
 - **Todas las páginas de herramientas deben usar este componente.**
 

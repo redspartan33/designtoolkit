@@ -1,12 +1,11 @@
-'use client';
+"use client";
 
-import React, { useEffect } from "react";
-import Link from "next/link";
 import { ArrowLeft, Lock, Server } from "lucide-react";
-import { toolsRegistry } from "@/lib/tools-registry";
+import Link from "next/link";
+import type React from "react";
+import { useEffect } from "react";
 import { useUIStore } from "@/lib/store";
-import { ThemeManager } from "@/components/layout/theme-manager";
-import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { toolsRegistry } from "@/lib/tools-registry";
 import { cn } from "@/lib/utils";
 
 interface ToolPageShellProps {
@@ -70,30 +69,30 @@ export function ToolPageShell({ toolId, children }: ToolPageShellProps) {
             )}
 
             {/* Privacy badge */}
-            <span className={cn(
-              "hidden sm:inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full bg-muted/60 text-muted-foreground shrink-0"
-            )}>
+            <span
+              className={cn(
+                "hidden sm:inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full bg-muted/60 text-muted-foreground shrink-0",
+              )}
+            >
               {tool.privacy === "local" ? (
-                <><Lock className="h-2.5 w-2.5" />Local</>
+                <>
+                  <Lock className="h-2.5 w-2.5" />
+                  Local
+                </>
               ) : (
-                <><Server className="h-2.5 w-2.5" />Server</>
+                <>
+                  <Server className="h-2.5 w-2.5" />
+                  Server
+                </>
               )}
             </span>
-          </div>
-
-          {/* Controls */}
-          <div className="flex items-center gap-2 shrink-0">
-            <ThemeManager />
-            <ThemeToggle />
           </div>
         </div>
       </header>
 
       {/* Full-width content */}
       <main className="flex-1">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-          {children}
-        </div>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">{children}</div>
       </main>
     </div>
   );

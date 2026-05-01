@@ -1,15 +1,11 @@
-'use client';
+"use client";
 
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-
-export type VisualStyle = 'nature' | 'earth' | 'aurora' | 'cyber' | 'ocean';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface UIState {
-  visualStyle: VisualStyle;
   commandPaletteOpen: boolean;
   toolUsageCounts: Record<string, number>;
-  setVisualStyle: (style: VisualStyle) => void;
   setCommandPaletteOpen: (open: boolean) => void;
   incrementToolUsage: (id: string) => void;
 }
@@ -17,10 +13,8 @@ interface UIState {
 export const useUIStore = create<UIState>()(
   persist(
     (set) => ({
-      visualStyle: 'nature',
       commandPaletteOpen: false,
       toolUsageCounts: {},
-      setVisualStyle: (style) => set({ visualStyle: style }),
       setCommandPaletteOpen: (open) => set({ commandPaletteOpen: open }),
       incrementToolUsage: (id) =>
         set((state) => ({
@@ -31,11 +25,10 @@ export const useUIStore = create<UIState>()(
         })),
     }),
     {
-      name: 'ui-storage',
+      name: "ui-storage",
       partialize: (state) => ({
-        visualStyle: state.visualStyle,
         toolUsageCounts: state.toolUsageCounts,
       }),
-    }
-  )
+    },
+  ),
 );
