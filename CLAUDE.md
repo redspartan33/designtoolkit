@@ -37,11 +37,31 @@ Si necesitas reintroducir múltiples temas, hay que reescribir `globals.css`, `a
 ## Store (`lib/store.ts`)
 ```ts
 // Persisted:
+locale: 'es' | 'en'                       // idioma activo
 toolUsageCounts: Record<string, number>   // incrementa al entrar a cada tool
 
 // Session only:
 commandPaletteOpen: boolean
 ```
+
+## Sistema de i18n (`lib/i18n/`)
+Sistema casero, zero-deps, client-side. Soporta cualquier idioma agregando un dict.
+
+- `lib/i18n/types.ts` — tipo `Locale`
+- `lib/i18n/messages/es.ts` y `en.ts` — diccionarios planos `Record<string, string>`
+- `lib/i18n/messages/index.ts` — registro `LOCALES` + `DEFAULT_LOCALE = 'es'`
+- `lib/i18n/use-translation.ts` — hook `useTranslation()` que retorna `t(key, fallback?)`
+- `components/layout/language-switcher.tsx` — dropdown con flags, en el header
+
+**Uso**: `const t = useTranslation(); t('home.searchPlaceholder')`. Para nombres de herramientas: `t(\`tools.\${tool.id}.name\`, tool.name)` — falla al canónico español de la registry.
+
+**Agregar un idioma nuevo**:
+1. Añadir el código a `Locale` en `lib/i18n/types.ts` (ej: `'fr'`).
+2. Crear `lib/i18n/messages/fr.ts` copiando `es.ts` y traduciendo.
+3. Registrarlo en `LOCALES` en `lib/i18n/messages/index.ts`.
+4. Añadirlo a `LANGUAGES` en `components/layout/language-switcher.tsx`.
+
+**Scope traducido actualmente**: chrome de la app (homepage, tool-page-shell, command palette, tool cards, badges, registry de tools). El interior de cada herramienta (icon-finder, font-finder, etc.) sigue en español hardcoded.
 
 ## Tools Registry (`lib/tools-registry.ts`)
 Única fuente de verdad. Para añadir una herramienta:

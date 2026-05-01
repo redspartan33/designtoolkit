@@ -4,6 +4,8 @@ import { ArrowLeft, Lock, Server } from "lucide-react";
 import Link from "next/link";
 import type React from "react";
 import { useEffect } from "react";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
+import { useTranslation } from "@/lib/i18n/use-translation";
 import { useUIStore } from "@/lib/store";
 import { toolsRegistry } from "@/lib/tools-registry";
 import { cn } from "@/lib/utils";
@@ -14,7 +16,8 @@ interface ToolPageShellProps {
 }
 
 export function ToolPageShell({ toolId, children }: ToolPageShellProps) {
-  const tool = toolsRegistry.find((t) => t.id === toolId);
+  const t = useTranslation();
+  const tool = toolsRegistry.find((it) => it.id === toolId);
   const { incrementToolUsage } = useUIStore();
 
   useEffect(() => {
@@ -26,15 +29,16 @@ export function ToolPageShell({ toolId, children }: ToolPageShellProps) {
   if (!tool) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-background">
-        <h2 className="text-xl font-bold">Herramienta no encontrada</h2>
+        <h2 className="text-xl font-bold">{t("tool.notFound")}</h2>
         <Link href="/" className="text-sm text-primary hover:underline">
-          ← Volver al inicio
+          ← {t("common.back")}
         </Link>
       </div>
     );
   }
 
   const Icon = tool.icon;
+  const name = t(`tools.${tool.id}.name`, tool.name);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -59,12 +63,12 @@ export function ToolPageShell({ toolId, children }: ToolPageShellProps) {
             <div className="p-1.5 rounded-lg bg-primary/10 text-primary shrink-0">
               <Icon className="h-3.5 w-3.5" />
             </div>
-            <span className="font-bold text-sm truncate">{tool.name}</span>
+            <span className="font-bold text-sm truncate">{name}</span>
 
             {/* Status badge */}
             {tool.status === "beta" && (
               <span className="text-[9px] font-black uppercase tracking-wide px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 shrink-0">
-                Beta
+                {t("status.beta")}
               </span>
             )}
 
@@ -77,15 +81,19 @@ export function ToolPageShell({ toolId, children }: ToolPageShellProps) {
               {tool.privacy === "local" ? (
                 <>
                   <Lock className="h-2.5 w-2.5" />
-                  Local
+                  {t("privacy.local")}
                 </>
               ) : (
                 <>
                   <Server className="h-2.5 w-2.5" />
-                  Server
+                  {t("privacy.server")}
                 </>
               )}
             </span>
+          </div>
+
+          <div className="ml-auto shrink-0">
+            <LanguageSwitcher />
           </div>
         </div>
       </header>

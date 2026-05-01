@@ -2,14 +2,19 @@
 
 import { Search, Sparkles, X } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { ToolCard } from "@/components/tools/tool-card";
+import { useTranslation } from "@/lib/i18n/use-translation";
 import { useUIStore } from "@/lib/store";
 import { toolsRegistry } from "@/lib/tools-registry";
 import type { ToolCategory } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-const CATEGORIES: (ToolCategory | "Todas")[] = [
-  "Todas",
+// "all" is the only non-ToolCategory value here. Real categories come from
+// ToolCategory and are translated via the dictionary.
+type CategoryFilter = ToolCategory | "all";
+const CATEGORY_FILTERS: CategoryFilter[] = [
+  "all",
   "Branding",
   "UX",
   "UI",
@@ -18,10 +23,9 @@ const CATEGORIES: (ToolCategory | "Todas")[] = [
 ];
 
 export default function HomePage() {
+  const t = useTranslation();
   const [query, setQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState<ToolCategory | "Todas">(
-    "Todas",
-  );
+  const [activeCategory, setActiveCategory] = useState<CategoryFilter>("all");
   const { toolUsageCounts } = useUIStore();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -29,20 +33,32 @@ export default function HomePage() {
     const lower = query.toLowerCase().trim();
 
     const filtered = toolsRegistry.filter((tool) => {
+      // Match against both the canonical name/description AND the active
+      // translation, so search works regardless of UI language.
+      const translatedName = t(
+        `tools.${tool.id}.name`,
+        tool.name,
+      ).toLowerCase();
+      const translatedDesc = t(
+        `tools.${tool.id}.description`,
+        tool.description,
+      ).toLowerCase();
       const matchesSearch =
         !lower ||
         tool.name.toLowerCase().includes(lower) ||
         tool.description.toLowerCase().includes(lower) ||
+        translatedName.includes(lower) ||
+        translatedDesc.includes(lower) ||
         tool.tags.some((tag) => tag.includes(lower));
       const matchesCategory =
-        activeCategory === "Todas" || tool.category === activeCategory;
+        activeCategory === "all" || tool.category === activeCategory;
       return matchesSearch && matchesCategory;
     });
 
     return [...filtered].sort(
       (a, b) => (toolUsageCounts[b.id] || 0) - (toolUsageCounts[a.id] || 0),
     );
-  }, [query, activeCategory, toolUsageCounts]);
+  }, [query, activeCategory, toolUsageCounts, t]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background relative overflow-hidden">
@@ -70,8 +86,11 @@ export default function HomePage() {
             <div className="size-7 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-black text-sm shrink-0">
               D
             </div>
-            <span className="font-black text-sm tracking-tight">DesignKit</span>
+            <span className="font-black text-sm tracking-tight">
+              {t("home.brand")}
+            </span>
           </div>
+          <LanguageSwitcher />
         </div>
       </header>
 
@@ -85,7 +104,7 @@ export default function HomePage() {
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Buscar herramienta..."
+            placeholder={t("home.searchPlaceholder")}
             className="w-full h-14 pl-12 pr-12 text-base glass border-white/10 rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 transition-all duration-200 bg-transparent placeholder:text-muted-foreground/60"
           />
           {query && (
@@ -103,7 +122,7 @@ export default function HomePage() {
 
         {/* Category pills */}
         <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-          {CATEGORIES.map((cat) => (
+          {CATEGORY_FILTERS.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
@@ -114,7 +133,7 @@ export default function HomePage() {
                   : "glass border-white/10 text-muted-foreground hover:text-foreground",
               )}
             >
-              {cat}
+              {t(`category.${cat}`, cat)}
             </button>
           ))}
         </div>
@@ -134,16 +153,16 @@ export default function HomePage() {
               <Search className="h-5 w-5 text-muted-foreground" />
             </div>
             <p className="text-sm text-muted-foreground">
-              Sin resultados para <strong>"{query}"</strong>
+              {t("home.noResultsPrefix")} <strong>"{query}"</strong>
             </p>
             <button
               onClick={() => {
                 setQuery("");
-                setActiveCategory("Todas");
+                setActiveCategory("all");
               }}
               className="text-xs text-primary hover:underline"
             >
-              Limpiar búsqueda
+              {t("home.clearSearch")}
             </button>
           </div>
         )}
