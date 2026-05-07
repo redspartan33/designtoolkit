@@ -1,5 +1,10 @@
 # DesignKit - Guía para Claude / Agentes de IA
 
+## Preferencias del usuario (workflow git)
+- **Trabajar siempre sobre `main`**, no crear branches nuevos salvo que el usuario lo pida explícitamente.
+- Si el trabajo terminó en un worktree o branch separado, **mergear a `main` y pushear `main`** antes de cerrar — los cambios deben verse en la carpeta principal del usuario (`/Users/juanbautista/Documents/designtoolkit`), no quedarse en `.claude/worktrees/*`.
+- Después de cada bloque de cambios relevantes, hacer `git push origin main` para que el remoto quede al día.
+
 ## Comandos del Proyecto
 - **Instalar dependencias**: `pnpm install`
 - **Servidor de desarrollo**: `pnpm dev` (corre en http://localhost:3000)
