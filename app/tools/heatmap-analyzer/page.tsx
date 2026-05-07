@@ -280,10 +280,10 @@ function ControlsPanel({
       {
         key: "spread" as const,
         label: "Tamaño del foco",
-        hint: "Radio del blur final. Valores bajos mantienen los picos puntiagudos y separados; valores altos los funden en una mancha.",
-        min: 0.01,
-        max: 0.12,
-        step: 0.0025,
+        hint: "Sigma del blur final. Bajo = picos puntiagudos y separables; alto = más suavidad y fusión.",
+        min: 0.00625, // 5px sobre 800
+        max: 0.0625, // 50px sobre 800
+        step: 0.00125, // 1px
         format: (v: number) => `${Math.round(v * 800)}px`,
       },
       {
@@ -331,6 +331,39 @@ function ControlsPanel({
         max: 1,
         step: 0.02,
         format: (v: number) => `${Math.round(v * 100)}%`,
+      },
+    ],
+    [],
+  );
+
+  const peakControls = useMemo(
+    () => [
+      {
+        key: "peakRadius" as const,
+        label: "Distancia mínima entre picos",
+        hint: "Radio del Non-Maximum Suppression. Picos más cerca de esta distancia se fusionan en uno solo.",
+        min: 10,
+        max: 50,
+        step: 1,
+        format: (v: number) => `${Math.round(v)}px`,
+      },
+      {
+        key: "peakThreshold" as const,
+        label: "Umbral de intensidad",
+        hint: "Intensidad mínima (0–255) para que un máximo local cuente como pico. Bajo = más picos, incluso débiles.",
+        min: 50,
+        max: 200,
+        step: 1,
+        format: (v: number) => `${Math.round(v)}`,
+      },
+      {
+        key: "maxPeaks" as const,
+        label: "Máx. picos a mostrar",
+        hint: "Tope de marcadores numerados. Se quedan los de mayor intensidad.",
+        min: 2,
+        max: 10,
+        step: 1,
+        format: (v: number) => `${Math.round(v)}`,
       },
     ],
     [],
@@ -396,6 +429,63 @@ function ControlsPanel({
             </div>
           );
         })}
+      </div>
+
+      <div className="pt-5 border-t space-y-5">
+        <div>
+          <h4 className="text-sm font-semibold">Detección de picos</h4>
+          <p className="text-xs text-muted-foreground mt-1">
+            Cómo se identifican y muestran los focos discretos sobre el mapa.
+          </p>
+        </div>
+
+        <div className="flex items-center justify-between gap-3">
+          <Label htmlFor="show-peaks" className="text-xs font-medium">
+            Mostrar picos
+          </Label>
+          <Switch
+            id="show-peaks"
+            checked={opts.showPeaks}
+            onCheckedChange={onChangeBool("showPeaks")}
+          />
+        </div>
+
+        <div
+          className={`flex items-center justify-between gap-3 ${
+            !opts.showPeaks ? "opacity-50 pointer-events-none" : ""
+          }`}
+        >
+          <Label htmlFor="show-intensities" className="text-xs font-medium">
+            Mostrar intensidades
+          </Label>
+          <Switch
+            id="show-intensities"
+            checked={opts.showIntensities}
+            onCheckedChange={onChangeBool("showIntensities")}
+            disabled={!opts.showPeaks}
+          />
+        </div>
+
+        {peakControls.map((c) => (
+          <div key={c.key} className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label className="text-xs font-medium">{c.label}</Label>
+              <span className="text-xs tabular-nums text-muted-foreground">
+                {c.format(opts[c.key])}
+              </span>
+            </div>
+            <Slider
+              value={[opts[c.key]]}
+              min={c.min}
+              max={c.max}
+              step={c.step}
+              onValueChange={onChangeNumber(c.key)}
+            />
+            <p className="text-[10px] leading-snug text-muted-foreground/80">
+              {c.hint}
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   );

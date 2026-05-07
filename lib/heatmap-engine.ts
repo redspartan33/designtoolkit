@@ -35,12 +35,22 @@ export interface HeatmapOptions {
   centerWeight: number;
   /** Si false, ignora completamente el sesgo central (los picos compiten por mérito propio). */
   enableCenterBias: boolean;
-  /** Umbral de "puntos calientes" (0..1). Más alto = menos puntos, más selectivo. */
+  /** Umbral de "puntos calientes" del overlay coloreado (0..1). */
   threshold: number;
-  /** Tamaño del foco — sigma del blur final, fracción del lado mayor (0.01..0.15). */
+  /** Tamaño del foco — sigma del blur final, fracción del lado mayor (0.00625..0.0625 ≈ 5..50px). */
   spread: number;
   /** Intensidad / opacidad máxima del overlay (0..1). */
   intensity: number;
+  /** Distancia mínima entre picos (radio NMS) en píxeles del espacio de trabajo. */
+  peakRadius: number;
+  /** Intensidad mínima (0..255) para que un máximo local cuente como pico. */
+  peakThreshold: number;
+  /** Cantidad máxima de picos a retornar. */
+  maxPeaks: number;
+  /** Pinta los marcadores numerados sobre el preview. */
+  showPeaks: boolean;
+  /** Muestra el % de intensidad debajo de cada marcador. Requiere showPeaks. */
+  showIntensities: boolean;
 }
 
 export const DEFAULT_HEATMAP_OPTIONS: HeatmapOptions = {
@@ -52,6 +62,11 @@ export const DEFAULT_HEATMAP_OPTIONS: HeatmapOptions = {
   threshold: 0.25,
   spread: 0.025,
   intensity: 0.78,
+  peakRadius: 20,
+  peakThreshold: 100,
+  maxPeaks: 5,
+  showPeaks: true,
+  showIntensities: true,
 };
 
 function makeCanvas(w: number, h: number): HTMLCanvasElement {
@@ -357,13 +372,11 @@ export class HeatmapEngine {
     const alphaScale = Math.max(0, Math.min(1, opts.intensity));
 
     // Detección de picos discretos sobre el mapa post-blur.
-    // Radio = sigma * 1.2 (un poco mayor que el lóbulo del Gaussiano) con piso de 8px
-    // para que con spreads chicos no se dispare con ruido de alta frecuencia.
-    const peakRadius = Math.max(8, Math.round(sigma * 1.2));
+    // Los tres parámetros (radio NMS, umbral, top N) son controlables por el usuario.
     this.lastPeaks = detectPeaks(smoothed, w, h, {
-      radius: peakRadius,
-      threshold: Math.round(thr * 255),
-      maxPeaks: 8,
+      radius: Math.max(2, Math.round(opts.peakRadius)),
+      threshold: Math.max(0, Math.min(255, Math.round(opts.peakThreshold))),
+      maxPeaks: Math.max(1, Math.round(opts.maxPeaks)),
     });
 
     const result = makeCanvas(w, h);
@@ -397,7 +410,11 @@ export class HeatmapEngine {
    * devuelto por composite() (espacio de trabajo, lado mayor 800px),
    * así que se dibujan directamente sin reescalar.
    */
-  private drawPeakMarkers(canvas: HTMLCanvasElement, peaks: Peak[]): void {
+  private drawPeakMarkers(
+    canvas: HTMLCanvasElement,
+    peaks: Peak[],
+    showIntensities: boolean,
+  ): void {
     if (peaks.length === 0) return;
     const ctx = canvas.getContext("2d")!;
     ctx.save();
@@ -427,6 +444,11 @@ export class HeatmapEngine {
       ctx.fillStyle = "white";
       ctx.font = "bold 22px ui-sans-serif, system-ui, sans-serif";
       ctx.fillText(String(p.rank), p.x, p.y);
+    }
+
+    if (!showIntensities) {
+      ctx.restore();
+      return;
     }
 
     // Pasada separada para los labels: garantiza que un círculo posterior
@@ -460,7 +482,9 @@ export class HeatmapEngine {
   /** Renderiza a un dataURL en escala de trabajo (rápido, para preview en vivo). */
   renderPreviewDataURL(opts: HeatmapOptions): string {
     const canvas = this.composite(opts);
-    this.drawPeakMarkers(canvas, this.lastPeaks);
+    if (opts.showPeaks) {
+      this.drawPeakMarkers(canvas, this.lastPeaks, opts.showIntensities);
+    }
     return canvas.toDataURL("image/jpeg", 0.9);
   }
 
