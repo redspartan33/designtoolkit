@@ -391,9 +391,77 @@ export class HeatmapEngine {
     return result;
   }
 
+  /**
+   * Pinta marcadores numerados sobre el canvas para los picos detectados.
+   * Las coordenadas de `peaks` están en el mismo espacio que el canvas
+   * devuelto por composite() (espacio de trabajo, lado mayor 800px),
+   * así que se dibujan directamente sin reescalar.
+   */
+  private drawPeakMarkers(canvas: HTMLCanvasElement, peaks: Peak[]): void {
+    if (peaks.length === 0) return;
+    const ctx = canvas.getContext("2d")!;
+    ctx.save();
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    const radius = 30;
+    for (const p of peaks) {
+      // Hue interpolado 0° (rojo) → 35° (naranja) según rank.
+      const t = peaks.length > 1 ? (p.rank - 1) / (peaks.length - 1) : 0;
+      const hue = 5 + t * 30;
+
+      ctx.shadowColor = "rgba(0,0,0,0.55)";
+      ctx.shadowBlur = 6;
+      ctx.shadowOffsetY = 1;
+      ctx.fillStyle = `hsla(${hue}, 92%, 52%, 0.92)`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetY = 0;
+      ctx.strokeStyle = "white";
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      ctx.fillStyle = "white";
+      ctx.font = "bold 22px ui-sans-serif, system-ui, sans-serif";
+      ctx.fillText(String(p.rank), p.x, p.y);
+    }
+
+    // Pasada separada para los labels: garantiza que un círculo posterior
+    // no tape el % de un pico anterior.
+    ctx.font = "600 12px ui-sans-serif, system-ui, sans-serif";
+    for (const p of peaks) {
+      const pct = Math.round((p.value / 255) * 100);
+      const text = `${pct}%`;
+      const m = ctx.measureText(text);
+      const w = m.width + 12;
+      const h = 18;
+      const x = p.x - w / 2;
+      const y = p.y + radius + 8;
+
+      ctx.fillStyle = "rgba(0,0,0,0.75)";
+      ctx.beginPath();
+      if (typeof ctx.roundRect === "function") {
+        ctx.roundRect(x, y, w, h, 4);
+      } else {
+        ctx.rect(x, y, w, h);
+      }
+      ctx.fill();
+
+      ctx.fillStyle = "white";
+      ctx.fillText(text, p.x, y + h / 2);
+    }
+
+    ctx.restore();
+  }
+
   /** Renderiza a un dataURL en escala de trabajo (rápido, para preview en vivo). */
   renderPreviewDataURL(opts: HeatmapOptions): string {
-    return this.composite(opts).toDataURL("image/jpeg", 0.9);
+    const canvas = this.composite(opts);
+    this.drawPeakMarkers(canvas, this.lastPeaks);
+    return canvas.toDataURL("image/jpeg", 0.9);
   }
 
   /** Exporta a Blob en la resolución original de la imagen. */
