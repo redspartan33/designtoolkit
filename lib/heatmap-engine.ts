@@ -188,6 +188,83 @@ function absDiff(
   return out;
 }
 
+export interface Peak {
+  /** Coordenada X en el espacio de trabajo (imagen downscaleada, lado mayor 800). */
+  x: number;
+  /** Coordenada Y en el espacio de trabajo. */
+  y: number;
+  /** Intensidad 0..255 en el mapa post-blur. */
+  value: number;
+  /** Ranking 1..N (1 = más caliente). */
+  rank: number;
+}
+
+interface DetectPeaksOptions {
+  /** Radio de NMS en píxeles. Picos a menos distancia se fusionan. */
+  radius: number;
+  /** Umbral mínimo (0..255). Valores por debajo no se consideran picos. */
+  threshold: number;
+  /** Top N picos a retornar. */
+  maxPeaks: number;
+}
+
+/**
+ * Non-Maximum Suppression: encuentra máximos locales discretos en `smoothed`.
+ * - Recorre cada píxel y verifica si supera todos los vecinos en una ventana de radio `radius`.
+ * - Marca la ventana como visitada para evitar re-disparar en empates planos.
+ * - Ordena por valor descendente y trunca a `maxPeaks`.
+ *
+ * Complejidad: O(w·h·r²) en el peor caso, pero el filtro por threshold descarta
+ * la mayoría de píxeles antes de la inspección de ventana.
+ */
+function detectPeaks(
+  smoothed: Uint8ClampedArray,
+  w: number,
+  h: number,
+  opts: DetectPeaksOptions,
+): Peak[] {
+  const { radius: r, threshold: thr, maxPeaks } = opts;
+  const candidates: Peak[] = [];
+  const visited = new Uint8Array(w * h);
+
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const idx = y * w + x;
+      if (visited[idx]) continue;
+      const v = smoothed[idx];
+      if (v < thr) continue;
+
+      const y0 = y - r < 0 ? 0 : y - r;
+      const y1 = y + r > h - 1 ? h - 1 : y + r;
+      const x0 = x - r < 0 ? 0 : x - r;
+      const x1 = x + r > w - 1 ? w - 1 : x + r;
+
+      let isMax = true;
+      for (let ny = y0; ny <= y1 && isMax; ny++) {
+        const rowOff = ny * w;
+        for (let nx = x0; nx <= x1; nx++) {
+          if (smoothed[rowOff + nx] > v) {
+            isMax = false;
+            break;
+          }
+        }
+      }
+      if (!isMax) continue;
+
+      candidates.push({ x, y, value: v, rank: 0 });
+      for (let ny = y0; ny <= y1; ny++) {
+        const rowOff = ny * w;
+        for (let nx = x0; nx <= x1; nx++) {
+          visited[rowOff + nx] = 1;
+        }
+      }
+    }
+  }
+
+  candidates.sort((a, b) => b.value - a.value);
+  return candidates.slice(0, maxPeaks).map((p, i) => ({ ...p, rank: i + 1 }));
+}
+
 interface PrecomputedSignals {
   width: number;
   height: number;
@@ -203,6 +280,8 @@ interface PrecomputedSignals {
 
 export class HeatmapEngine {
   private signals: PrecomputedSignals | null = null;
+  /** Picos detectados en el último composite(). Coordenadas en espacio de trabajo. */
+  lastPeaks: Peak[] = [];
 
   /** Precalcula señales (una sola vez por imagen). */
   async load(image: HTMLImageElement): Promise<void> {
@@ -276,6 +355,16 @@ export class HeatmapEngine {
     // umbral suave: por debajo del umbral, alpha = 0; por encima, curva 1.5
     const thr = Math.max(0, Math.min(0.99, opts.threshold));
     const alphaScale = Math.max(0, Math.min(1, opts.intensity));
+
+    // Detección de picos discretos sobre el mapa post-blur.
+    // Radio = sigma * 1.2 (un poco mayor que el lóbulo del Gaussiano) con piso de 8px
+    // para que con spreads chicos no se dispare con ruido de alta frecuencia.
+    const peakRadius = Math.max(8, Math.round(sigma * 1.2));
+    this.lastPeaks = detectPeaks(smoothed, w, h, {
+      radius: peakRadius,
+      threshold: Math.round(thr * 255),
+      maxPeaks: 8,
+    });
 
     const result = makeCanvas(w, h);
     const ctx = result.getContext("2d")!;
