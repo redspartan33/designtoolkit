@@ -99,7 +99,7 @@ export const toolsRegistry: Tool[] = [
     icon: Flame,
     route: "/tools/heatmap-analyzer",
     status: "beta",
-    privacy: "server",
+    privacy: "local",
     tags: ["ux", "heatmap", "visual", "analisis", "atencion"],
   },
   {

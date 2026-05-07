@@ -89,6 +89,7 @@ Las categorías reflejan el rol del usuario, no el tipo de asset. **Siempre** a�
 - `journey-map` (UX): Mapa de viaje con curva emocional SVG, touchpoints, pain points, oportunidades
 - `assumption-mapper` (Research): Matriz 2×2 impacto × certeza con notas y vista lista
 - `usability-script` (Research): Guiones de test de usabilidad con tareas, escenarios y secciones de preguntas
+- `heatmap-analyzer` (UX): Mapa de atención visual **100% client-side**. Motor en `lib/heatmap-engine.ts` (Canvas 2D + filtro `blur` nativo) que combina cuatro señales — bordes (Sobel), contraste de luminancia, saturación, sesgo central F-Z. Las señales se precalculan al cargar la imagen; los sliders re-renderizan en vivo con ~60ms de debounce. Controles UI: cantidad de puntos (umbral), tamaño del foco, intensidad, peso central, peso bordes, peso contraste, peso color. `privacy: 'local'`, **no requiere microservicio**.
 
 **Fase 3 — Diseñar para escala**
 - `typography-scale` (UI): Ratios modulares (Minor 2nd → Golden Ratio), exporta CSS/JSON
@@ -117,7 +118,7 @@ Las categorías reflejan el rol del usuario, no el tipo de asset. **Siempre** a�
 - Mantener modularidad: cada herramienta es autocontenida en `app/tools/[nombre]`.
 - Al terminar cambios relevantes, actualizar este archivo.
 
-## Microservicio (Heatmap)
-- **Ruta**: `/microservice/`
-- **Levantar**: `cd microservice && source venv/bin/activate && python main.py`
-- **Dependencias Python**: OpenCV (contrib), FastAPI, NumPy.
+## Microservicio (obsoleto)
+La carpeta `microservice/` (FastAPI + OpenCV) ya **no se usa**. El heatmap se procesa
+en el navegador (`lib/heatmap-engine.ts`). Se puede eliminar la carpeta sin afectar
+a la app.
