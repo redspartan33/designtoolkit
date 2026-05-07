@@ -33,6 +33,8 @@ export interface HeatmapOptions {
   colorWeight: number;
   /** Peso del sesgo central / patrón F-Z (0..1). */
   centerWeight: number;
+  /** Si false, ignora completamente el sesgo central (los picos compiten por mérito propio). */
+  enableCenterBias: boolean;
   /** Umbral de "puntos calientes" (0..1). Más alto = menos puntos, más selectivo. */
   threshold: number;
   /** Tamaño del foco — sigma del blur final, fracción del lado mayor (0.01..0.15). */
@@ -45,9 +47,10 @@ export const DEFAULT_HEATMAP_OPTIONS: HeatmapOptions = {
   edgeWeight: 0.55,
   contrastWeight: 0.45,
   colorWeight: 0.35,
-  centerWeight: 0.5,
+  centerWeight: 0.15,
+  enableCenterBias: true,
   threshold: 0.25,
-  spread: 0.05,
+  spread: 0.025,
   intensity: 0.78,
 };
 
@@ -249,15 +252,13 @@ export class HeatmapEngine {
     if (!s) throw new Error("HeatmapEngine: load() must be called first");
 
     const { width: w, height: h } = s;
+    const cWeight = opts.enableCenterBias ? opts.centerWeight : 0;
     const totalW =
-      opts.edgeWeight +
-        opts.contrastWeight +
-        opts.colorWeight +
-        opts.centerWeight || 1;
+      opts.edgeWeight + opts.contrastWeight + opts.colorWeight + cWeight || 1;
     const wE = opts.edgeWeight / totalW;
     const wC = opts.contrastWeight / totalW;
     const wS = opts.colorWeight / totalW;
-    const wB = opts.centerWeight / totalW;
+    const wB = cWeight / totalW;
 
     const combined = new Float32Array(w * h);
     for (let i = 0; i < combined.length; i++) {

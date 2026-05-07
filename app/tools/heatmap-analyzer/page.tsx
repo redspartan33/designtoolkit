@@ -15,11 +15,19 @@ import { ToolPageShell } from "@/components/tools/tool-page-shell";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
 import {
   DEFAULT_HEATMAP_OPTIONS,
   HeatmapEngine,
   type HeatmapOptions,
 } from "@/lib/heatmap-engine";
+
+type NumericKey = {
+  [K in keyof HeatmapOptions]: HeatmapOptions[K] extends number ? K : never;
+}[keyof HeatmapOptions];
+type BooleanKey = {
+  [K in keyof HeatmapOptions]: HeatmapOptions[K] extends boolean ? K : never;
+}[keyof HeatmapOptions];
 
 export default function HeatmapAnalyzerPage() {
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -116,12 +124,17 @@ export default function HeatmapAnalyzerPage() {
     }
   };
 
-  const set = useCallback(
-    <K extends keyof HeatmapOptions>(key: K) =>
-      (v: number | number[] | readonly number[]) => {
-        const val = Array.isArray(v) ? v[0] : (v as number);
-        setOpts((prev) => ({ ...prev, [key]: val }));
-      },
+  const setNumber = useCallback(
+    (key: NumericKey) => (v: number | number[] | readonly number[]) => {
+      const val = Array.isArray(v) ? v[0] : (v as number);
+      setOpts((prev) => ({ ...prev, [key]: val }));
+    },
+    [],
+  );
+  const setBool = useCallback(
+    (key: BooleanKey) => (checked: boolean) => {
+      setOpts((prev) => ({ ...prev, [key]: checked }));
+    },
     [],
   );
 
@@ -184,7 +197,11 @@ export default function HeatmapAnalyzerPage() {
             </div>
 
             {/* Lado derecho: controles */}
-            <ControlsPanel opts={opts} onChange={set} />
+            <ControlsPanel
+              opts={opts}
+              onChangeNumber={setNumber}
+              onChangeBool={setBool}
+            />
           </div>
         )}
       </div>
@@ -240,12 +257,14 @@ function ImagePanel({
 
 function ControlsPanel({
   opts,
-  onChange,
+  onChangeNumber,
+  onChangeBool,
 }: {
   opts: HeatmapOptions;
-  onChange: <K extends keyof HeatmapOptions>(
-    key: K,
+  onChangeNumber: (
+    key: NumericKey,
   ) => (v: number | number[] | readonly number[]) => void;
+  onChangeBool: (key: BooleanKey) => (checked: boolean) => void;
 }) {
   const controls = useMemo(
     () => [
@@ -261,11 +280,11 @@ function ControlsPanel({
       {
         key: "spread" as const,
         label: "Tamaño del foco",
-        hint: "Radio de las manchas de calor (sigma del blur final).",
+        hint: "Radio del blur final. Valores bajos mantienen los picos puntiagudos y separados; valores altos los funden en una mancha.",
         min: 0.01,
         max: 0.12,
-        step: 0.005,
-        format: (v: number) => `${(v * 100).toFixed(1)}%`,
+        step: 0.0025,
+        format: (v: number) => `${Math.round(v * 800)}px`,
       },
       {
         key: "intensity" as const,
@@ -284,6 +303,7 @@ function ControlsPanel({
         max: 1,
         step: 0.02,
         format: (v: number) => `${Math.round(v * 100)}%`,
+        disabledWhen: (o: HeatmapOptions) => !o.enableCenterBias,
       },
       {
         key: "edgeWeight" as const,
@@ -327,26 +347,55 @@ function ControlsPanel({
         </p>
       </div>
       <div className="space-y-5">
-        {controls.map((c) => (
-          <div key={c.key} className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label className="text-xs font-medium">{c.label}</Label>
-              <span className="text-xs tabular-nums text-muted-foreground">
-                {c.format(opts[c.key])}
-              </span>
+        {controls.map((c) => {
+          const disabled = c.disabledWhen?.(opts) ?? false;
+          return (
+            <div key={c.key}>
+              {c.key === "centerWeight" && (
+                <div className="flex items-start justify-between gap-3 mb-4 pb-4 border-b">
+                  <div className="space-y-1">
+                    <Label
+                      htmlFor="enable-center-bias"
+                      className="text-xs font-medium"
+                    >
+                      Activar sesgo central
+                    </Label>
+                    <p className="text-[10px] leading-snug text-muted-foreground/80">
+                      Si está apagado, los picos en esquinas y bordes compiten
+                      sin penalización por estar lejos del centro.
+                    </p>
+                  </div>
+                  <Switch
+                    id="enable-center-bias"
+                    checked={opts.enableCenterBias}
+                    onCheckedChange={onChangeBool("enableCenterBias")}
+                  />
+                </div>
+              )}
+              <div
+                className={`space-y-2 ${disabled ? "opacity-50 pointer-events-none" : ""}`}
+              >
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-medium">{c.label}</Label>
+                  <span className="text-xs tabular-nums text-muted-foreground">
+                    {c.format(opts[c.key])}
+                  </span>
+                </div>
+                <Slider
+                  value={[opts[c.key]]}
+                  min={c.min}
+                  max={c.max}
+                  step={c.step}
+                  onValueChange={onChangeNumber(c.key)}
+                  disabled={disabled}
+                />
+                <p className="text-[10px] leading-snug text-muted-foreground/80">
+                  {c.hint}
+                </p>
+              </div>
             </div>
-            <Slider
-              value={[opts[c.key]]}
-              min={c.min}
-              max={c.max}
-              step={c.step}
-              onValueChange={onChange(c.key)}
-            />
-            <p className="text-[10px] leading-snug text-muted-foreground/80">
-              {c.hint}
-            </p>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
