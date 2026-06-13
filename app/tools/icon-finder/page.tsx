@@ -401,7 +401,9 @@ export default function IconFinderPage() {
                     </div>
                     <Slider
                       value={[size]}
-                      onValueChange={([v]) => setSize(v)}
+                      onValueChange={(v) =>
+                        setSize(Array.isArray(v) ? v[0] : v)
+                      }
                       min={16}
                       max={128}
                       step={2}
