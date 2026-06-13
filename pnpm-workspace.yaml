@@ -1,3 +1,9 @@
+# pnpm 11+ usa allowBuilds (mapa paquete: bool)
+allowBuilds:
+  msw: true
+  protobufjs: true
+  sharp: true
+# pnpm 10 usa onlyBuiltDependencies (lista) — se mantiene por compatibilidad
 onlyBuiltDependencies:
   - "@biomejs/biome"
   - esbuild
