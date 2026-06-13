@@ -1,3 +1,7 @@
-ignoredBuiltDependencies:
+onlyBuiltDependencies:
+  - "@biomejs/biome"
+  - esbuild
+  - msw
+  - protobufjs
   - sharp
   - unrs-resolver
