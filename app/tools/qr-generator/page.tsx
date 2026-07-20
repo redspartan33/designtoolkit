@@ -16,13 +16,20 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-
-// ---------------------------------------------------------------------------
-// Tipos de QR y builders de string (cada QR es solo un string con un formato
-// estándar reconocido por los lectores de móvil).
-// ---------------------------------------------------------------------------
-
-type QRType = "text" | "wifi" | "geo" | "email" | "phone" | "sms" | "vcard";
+import {
+  buildEmail,
+  buildGeo,
+  buildPhone,
+  buildSms,
+  buildVcard,
+  buildWifi,
+  type EmailFields,
+  type GeoFields,
+  type QRType,
+  type SmsFields,
+  type VcardFields,
+  type WifiFields,
+} from "@/lib/qr";
 
 const QR_TYPES: { id: QRType; label: string }[] = [
   { id: "text", label: "URL / Texto" },
@@ -43,93 +50,6 @@ const TYPE_HELP: Record<QRType, string> = {
   sms: "Abre la app de mensajes con el número y el texto precargados.",
   vcard: "Guarda un contacto completo en la agenda del dispositivo.",
 };
-
-// Escapa los caracteres especiales del formato WIFI (\ ; , : ").
-function escapeWifi(input: string): string {
-  return input.replace(/([\\;,:"])/g, "\\$1");
-}
-
-// Escapa los caracteres especiales de vCard (\ ; ,) y saltos de línea.
-function escapeVcard(input: string): string {
-  return input
-    .replace(/\\/g, "\\\\")
-    .replace(/\n/g, "\\n")
-    .replace(/;/g, "\\;")
-    .replace(/,/g, "\\,");
-}
-
-interface WifiFields {
-  ssid: string;
-  password: string;
-  encryption: "WPA" | "WEP" | "nopass";
-  hidden: boolean;
-}
-interface GeoFields {
-  lat: string;
-  lng: string;
-}
-interface EmailFields {
-  to: string;
-  subject: string;
-  body: string;
-}
-interface SmsFields {
-  number: string;
-  message: string;
-}
-interface VcardFields {
-  firstName: string;
-  lastName: string;
-  phone: string;
-  email: string;
-  org: string;
-  title: string;
-  url: string;
-}
-
-function buildWifi(f: WifiFields): string {
-  if (!f.ssid.trim()) return "";
-  const parts = [`T:${f.encryption}`, `S:${escapeWifi(f.ssid)}`];
-  if (f.encryption !== "nopass") parts.push(`P:${escapeWifi(f.password)}`);
-  if (f.hidden) parts.push("H:true");
-  return `WIFI:${parts.join(";")};;`;
-}
-
-function buildGeo(f: GeoFields): string {
-  if (!f.lat.trim() || !f.lng.trim()) return "";
-  return `geo:${f.lat.trim()},${f.lng.trim()}`;
-}
-
-function buildEmail(f: EmailFields): string {
-  if (!f.to.trim()) return "";
-  const params = new URLSearchParams();
-  if (f.subject.trim()) params.set("subject", f.subject);
-  if (f.body.trim()) params.set("body", f.body);
-  const query = params.toString();
-  return `mailto:${f.to.trim()}${query ? `?${query}` : ""}`;
-}
-
-function buildSms(f: SmsFields): string {
-  if (!f.number.trim()) return "";
-  return `SMSTO:${f.number.trim()}:${f.message}`;
-}
-
-function buildVcard(f: VcardFields): string {
-  if (!f.firstName.trim() && !f.lastName.trim() && !f.phone.trim()) return "";
-  const lines = [
-    "BEGIN:VCARD",
-    "VERSION:3.0",
-    `N:${escapeVcard(f.lastName)};${escapeVcard(f.firstName)};;;`,
-    `FN:${escapeVcard(`${f.firstName} ${f.lastName}`.trim())}`,
-  ];
-  if (f.org.trim()) lines.push(`ORG:${escapeVcard(f.org)}`);
-  if (f.title.trim()) lines.push(`TITLE:${escapeVcard(f.title)}`);
-  if (f.phone.trim()) lines.push(`TEL;TYPE=CELL:${f.phone.trim()}`);
-  if (f.email.trim()) lines.push(`EMAIL:${f.email.trim()}`);
-  if (f.url.trim()) lines.push(`URL:${f.url.trim()}`);
-  lines.push("END:VCARD");
-  return lines.join("\n");
-}
 
 export default function QRGeneratorPage() {
   const [type, setType] = useState<QRType>("text");
@@ -172,7 +92,7 @@ export default function QRGeneratorPage() {
       case "email":
         return buildEmail(email);
       case "phone":
-        return phone.trim() ? `tel:${phone.trim()}` : "";
+        return buildPhone(phone);
       case "sms":
         return buildSms(sms);
       case "vcard":

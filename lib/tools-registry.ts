@@ -8,6 +8,7 @@ import {
   ClipboardList,
   Contrast,
   Eraser,
+  Eye,
   FileText,
   Flame,
   FlaskConical,
@@ -70,11 +71,11 @@ export const toolsRegistry: Tool[] = [
   {
     id: "favicon-generator",
     name: "Generador de Favicons",
-    description: "Genera todos los formatos de favicon necesarios.",
+    description: "Genera todos los formatos de favicon (PNG e .ico) desde una imagen.",
     category: "Branding",
     icon: BoxSelect,
     route: "/tools/favicon-generator",
-    status: "coming-soon",
+    status: "beta",
     privacy: "local",
     tags: ["branding", "favicon", "logo", "generador"],
   },
@@ -137,6 +138,26 @@ export const toolsRegistry: Tool[] = [
     status: "stable",
     privacy: "local",
     tags: ["ui", "color", "contraste", "accesibilidad", "wcag"],
+  },
+  {
+    id: "color-blindness",
+    name: "Simulador de Daltonismo",
+    description:
+      "Simula cómo se ven imágenes y paletas con los 8 tipos de daltonismo.",
+    category: "UI",
+    icon: Eye,
+    route: "/tools/color-blindness",
+    status: "beta",
+    privacy: "local",
+    tags: [
+      "ui",
+      "accesibilidad",
+      "daltonismo",
+      "color",
+      "a11y",
+      "contraste",
+      "wcag",
+    ],
   },
   {
     id: "typography-scale",
@@ -363,7 +384,8 @@ export const toolsRegistry: Tool[] = [
   {
     id: "qr-generator",
     name: "Generador QR",
-    description: "Crea códigos QR personalizados.",
+    description:
+      "Genera códigos QR de URL, WiFi, ubicación, email, teléfono, SMS y vCard.",
     category: "Product Management",
     icon: QrCode,
     route: "/tools/qr-generator",

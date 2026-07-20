@@ -4,12 +4,14 @@ DesignKit es una plataforma web personal para diseñadores que reúne un conjunt
 
 ## Stack Técnico
 
-- Next.js 15 (App Router)
+- Next.js 16 (App Router)
 - React 19
 - Tailwind CSS v4
-- shadcn/ui
+- `@base-ui/react` (primitivas de UI; los componentes se generaron con shadcn CLI)
+- Zustand (estado global) + i18n casero (es/en)
 - pnpm
 - Biome (Lint & Format)
+- Vitest (tests de lógica pura)
 
 ## Cómo correrlo localmente
 
@@ -23,6 +25,30 @@ DesignKit es una plataforma web personal para diseñadores que reúne un conjunt
    pnpm dev
    ```
 4. Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
+
+## Tests
+
+Los módulos de lógica pura (`lib/`) se testean con Vitest:
+
+```bash
+pnpm test
+```
+
+## Microservicio (Heatmap Analyzer)
+
+Algunas herramientas usan red: **Heatmap Analyzer** depende de un microservicio Python (FastAPI + OpenCV) que corre aparte, y **Buscador de Iconos / Tipografías** consultan APIs externas. El resto de herramientas son 100% locales.
+
+Para levantar el microservicio del heatmap:
+
+```bash
+cd microservice
+python3 -m venv venv
+source venv/bin/activate            # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn main:app --reload           # queda en http://127.0.0.1:8000
+```
+
+El `venv/` es local y está en `.gitignore` (no se versiona).
 
 ## Cómo agregar una herramienta nueva
 
